@@ -6,7 +6,7 @@ const Container = styled.div`
 margin: 40px;
 `
 
-const MainLayout: React.FC<{children: JSX.Element}> = ({children}) => {
+const MainLayout: React.FC<{children: any}> = ({children}) => {
     return (
         <>
             <Navbar/>
