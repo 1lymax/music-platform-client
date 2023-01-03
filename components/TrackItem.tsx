@@ -44,7 +44,7 @@ const TrackItem: FC<TrackItemProps> = ({track, active = false}) => {
 
     return (
         <Container onClick={() => router.push('/tracks/' + track._id)}>
-            <IconButton>
+            <IconButton onClick={e => e.stopPropagation()}>
                 {active
                     ? <Pause/>
                     : <PlayArrow/>
