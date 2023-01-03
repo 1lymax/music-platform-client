@@ -2,7 +2,6 @@ import React, {ChangeEvent, FC, useEffect} from 'react';
 import {Pause, PlayArrow, VolumeUp} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import styled from "styled-components";
-import {ITrack} from "../types/track";
 import ProgressBar from "./ProgressBar";
 import {useActions} from "../hooks/useActions";
 import {useTypedSelector} from "../hooks/useTypedSelector";
@@ -62,33 +61,31 @@ let audio: HTMLAudioElement
 
 
 const Player: FC<PlayerProps> = () => {
-    const track: ITrack = {
-        _id: '63ac369be5a74b86da15938d',
-        name: "Maginificent",
-        text: "123-456-789",
-        listens: 4,
-        comments: [],
-        artistId: {_id: '63ac8ba333a49ff8b4e05aea', name: "U2"},
-        audio: "http://localhost:5000/audio/ecec8d10-8820-11ed-9f3b-eb05f7cd6964.mp3",
-        picture: "http://localhost:5000/image/ece56120-8820-11ed-9f3b-eb05f7cd6964.jpg",
-        albumId: {_id: '63ad8d8c0c3370c1914a96e1'}
-    }
+
     const {pause, duration, volume, active, currentTime} = useTypedSelector(state => state.player)
-    const {pauseTrack, playTrack, setVolume, setActive, setDuration, setCurrentTime} = useActions()
+    const {pauseTrack, playTrack, setVolume, setDuration, setCurrentTime} = useActions()
 
     useEffect(() => {
         if (!audio) {
             audio = new Audio()
-            audio.src = track.audio
+        }else{
+            setAudio()
+            play()
+        }
+    }, [active]);
+
+    const setAudio = () => {
+        if (active) {
+            audio.src = active.audio
             audio.volume = volume / 100
             audio.onloadedmetadata = () => {
-                setDuration(Math.floor(audio.duration))
+                setDuration(Math.ceil(audio.duration))
             }
             audio.ontimeupdate = () => {
-                setCurrentTime(Math.floor(audio.currentTime))
+                setCurrentTime(Math.ceil(audio.currentTime))
             }
         }
-    }, []);
+    }
 
     const play = () => {
         if (pause) {
@@ -110,6 +107,8 @@ const Player: FC<PlayerProps> = () => {
         setCurrentTime(Number(e.target.value))
     }
 
+    if (!active) return null
+
     return (
         <Container>
             <IconButton onClick={play}>
@@ -119,14 +118,14 @@ const Player: FC<PlayerProps> = () => {
                 }
             </IconButton>
             <InfoContainer>
-                <Image src={track.picture}/>
+                <Image src={active?.picture}/>
                 <Info>
                     <Title>
-                        {track.name} - {track.artistId.name}
+                        {active?.name} - {active?.artistId.name}
                     </Title>
-                    {track.albumId?.name &&
+                    {active?.albumId?.name &&
 						<SubTitle>
-							({track.albumId.name})
+							({active?.albumId.name})
 						</SubTitle>
                     }
                 </Info>

@@ -30,9 +30,6 @@ const CardContent = styled.div`
 const Title = styled.h1`
 `
 
-// const Button = styled.button`
-// `
-
 const Index = () => {
     const router = useRouter()
     const {} = useActions()

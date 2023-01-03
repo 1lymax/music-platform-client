@@ -4,10 +4,12 @@ import {ITrack} from "../types/track";
 import IconButton from "@mui/material/IconButton";
 import {Delete, Pause, PlayArrow} from '@mui/icons-material';
 import {useRouter} from "next/router";
+import {useActions} from "../hooks/useActions";
+import {useTypedSelector} from "../hooks/useTypedSelector";
+import convertHMS from "../utils/convertHMS";
 
 interface TrackItemProps {
     track: ITrack;
-    active?: boolean
 }
 
 const Container = styled.div`
@@ -16,7 +18,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   border: 1px solid lightgray;
-  border-radius: 10px;
+  border-radius: 5px;
 `
 
 const Image = styled.img``
@@ -39,13 +41,27 @@ const Artist = styled.div`
   font-style: italic;
 `
 
-const TrackItem: FC<TrackItemProps> = ({track, active = true}) => {
+const TrackItem: FC<TrackItemProps> = ({track }) => {
     const router = useRouter()
+    const {playTrack, pauseTrack, setActive} = useActions()
+    const {active, pause, duration, currentTime} = useTypedSelector(state => state.player)
+
+
+    const play = (e:any) => {
+        e.stopPropagation()
+        setActive(track)
+        if (pause) {
+            playTrack()
+        }else {
+            pauseTrack()
+        }
+
+    }
 
     return (
         <Container onClick={() => router.push('/tracks/' + track._id)}>
-            <IconButton onClick={e => e.stopPropagation()}>
-                {active
+            <IconButton onClick={play}>
+                {!pause && active?._id === track._id
                     ? <Pause/>
                     : <PlayArrow/>
                 }
@@ -56,7 +72,7 @@ const TrackItem: FC<TrackItemProps> = ({track, active = true}) => {
                 <Album>{track.albumId?.name}</Album>
                 <Artist>{track.artistId?.name}</Artist>
             </TrackWrapper>
-            {active && <div>02:42 / 03:45</div>
+            {active?._id === track._id && <div>{convertHMS(currentTime)} / {convertHMS(duration)}</div>
             }
             <IconButton style={{marginLeft: 'auto'}}>
                 <Delete/>

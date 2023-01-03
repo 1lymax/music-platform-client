@@ -1,6 +1,5 @@
 import {PlayerState} from "../../types/player";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "../store";
 import {HYDRATE} from "next-redux-wrapper";
 
 const initialState: PlayerState = {
@@ -47,10 +46,6 @@ export const playerSlice = createSlice({
     },
 })
 
-export const {setActive, setDuration, setCurrentTime, pauseTrack, setVolume, playTrack} = playerSlice.actions
 export const actionCreators = playerSlice.actions
-
-export const playerActive = (state: RootState) => state.player.active
-export const playerPause = (state: RootState) => state.player.pause
 
 export default playerSlice.reducer
