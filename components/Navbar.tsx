@@ -23,7 +23,7 @@ const drawerWidth = 240;
 
 const menuItems = [
     {title: 'Main', href: '/'},
-    {title: 'Track list', href: 'tracks'},
+    {title: 'Track list', href: '/tracks'},
     {title: 'Artists', href: '/artists'},
     {title: 'Albums', href: '/albums'}
 ]
