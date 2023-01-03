@@ -39,7 +39,7 @@ const Artist = styled.div`
   font-style: italic;
 `
 
-const TrackItem: FC<TrackItemProps> = ({track, active = false}) => {
+const TrackItem: FC<TrackItemProps> = ({track, active = true}) => {
     const router = useRouter()
 
     return (

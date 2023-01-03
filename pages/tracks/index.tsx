@@ -5,6 +5,7 @@ import {Button} from "@mui/material";
 import {useRouter} from "next/router";
 import {ITrack} from "../../types/track";
 import TrackList from "../../components/TrackList";
+import {useActions} from "../../hooks/useActions";
 
 const Container = styled.div`
   display: flex;
@@ -34,6 +35,7 @@ const Title = styled.h1`
 
 const Index = () => {
     const router = useRouter()
+    const {} = useActions()
     const tracks: ITrack[] = [
         {
             _id: '63ac369be5a74b86da15938d',

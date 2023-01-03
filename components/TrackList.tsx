@@ -21,7 +21,7 @@ const TrackList: FC<TrackListProps> = ({tracks}) => {
         <Container>
             <Wrapper>
                 {tracks.map((track) =>
-                    <TrackItem key={track._id} track={track} active={true}/>
+                    <TrackItem key={track._id} track={track} active={false}/>
                 )}
             </Wrapper>
         </Container>

@@ -1,11 +1,13 @@
 import React, {ChangeEvent, FC} from 'react';
 import styled from "styled-components";
+import convertHMS from '../utils/convertHMS'
 
 interface ProgressBarProps {
     left: number;
     right: number;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void
-    width: number
+    width: number;
+    timeConvert?: boolean
 }
 
 const Container = styled.div<{width: number}>`
@@ -14,14 +16,15 @@ const Container = styled.div<{width: number}>`
 `
 
 const Label = styled.div`
-  width: 30%;
+  margin-left: 10px;
+  width: 35%;
 `
 
 const Input = styled.input`
-  width: 70%;
+  width: 65%;
 `
 
-const ProgressBar: FC<ProgressBarProps> = ({left, right, onChange, width}) => {
+const ProgressBar: FC<ProgressBarProps> = ({left, right, onChange, width, timeConvert}) => {
     return (
         <Container width={width}>
             <Input
@@ -31,7 +34,7 @@ const ProgressBar: FC<ProgressBarProps> = ({left, right, onChange, width}) => {
                 max={right}
                 onChange={onChange}
             />
-            <Label>{left} / {right}</Label>
+            <Label>{timeConvert ? convertHMS(left) : left} / {timeConvert ? convertHMS(right) : right}</Label>
         </Container>
     );
 };

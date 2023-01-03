@@ -1,9 +1,12 @@
-import React, {FC} from 'react';
+import React, {ChangeEvent, FC, useEffect} from 'react';
 import {Pause, PlayArrow, VolumeUp} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import styled from "styled-components";
 import {ITrack} from "../types/track";
 import ProgressBar from "./ProgressBar";
+import {useActions} from "../hooks/useActions";
+import {useTypedSelector} from "../hooks/useTypedSelector";
+
 
 interface PlayerProps {
     //active: boolean
@@ -55,6 +58,8 @@ const VolumeContainer = styled.div`
   width: 15%;
 `
 
+let audio: HTMLAudioElement
+
 
 const Player: FC<PlayerProps> = () => {
     const track: ITrack = {
@@ -68,13 +73,49 @@ const Player: FC<PlayerProps> = () => {
         picture: "http://localhost:5000/image/ece56120-8820-11ed-9f3b-eb05f7cd6964.jpg",
         albumId: {_id: '63ad8d8c0c3370c1914a96e1'}
     }
+    const {pause, duration, volume, active, currentTime} = useTypedSelector(state => state.player)
+    const {pauseTrack, playTrack, setVolume, setActive, setDuration, setCurrentTime} = useActions()
+
+    useEffect(() => {
+        if (!audio) {
+            audio = new Audio()
+            audio.src = track.audio
+            audio.volume = volume / 100
+            audio.onloadedmetadata = () => {
+                setDuration(Math.floor(audio.duration))
+            }
+            audio.ontimeupdate = () => {
+                setCurrentTime(Math.floor(audio.currentTime))
+            }
+        }
+    }, []);
+
+    const play = () => {
+        if (pause) {
+            playTrack()
+            audio.play()
+        } else {
+            pauseTrack()
+            audio.pause()
+        }
+    }
+
+    const changeVolume = (e: ChangeEvent<HTMLInputElement>) => {
+        audio.volume = Number(e.target.value) / 100
+        setVolume(Number(e.target.value))
+    }
+
+    const changeCurrentTime = (e: ChangeEvent<HTMLInputElement>) => {
+        audio.currentTime = (Number(e.target.value))
+        setCurrentTime(Number(e.target.value))
+    }
 
     return (
         <Container>
-            <IconButton onClick={e => e.stopPropagation()}>
-                {true
-                    ? <Pause/>
-                    : <PlayArrow/>
+            <IconButton onClick={play}>
+                {pause
+                    ? <PlayArrow/>
+                    : <Pause/>
                 }
             </IconButton>
             <InfoContainer>
@@ -90,10 +131,10 @@ const Player: FC<PlayerProps> = () => {
                     }
                 </Info>
             </InfoContainer>
-            <ProgressBar left={0} right={100} onChange={() => ({})} width={50}/>
+            <ProgressBar left={currentTime} right={duration} onChange={changeCurrentTime} width={50} timeConvert/>
             <VolumeContainer>
                 <VolumeUp/>
-                <ProgressBar left={0} right={100} onChange={() => ({})} width={90}/>
+                <ProgressBar left={volume} right={100} onChange={changeVolume} width={90}/>
             </VolumeContainer>
         </Container>
     );
