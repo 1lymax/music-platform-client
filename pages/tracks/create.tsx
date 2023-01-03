@@ -3,13 +3,12 @@ import MainLayout from "../../layouts/MainLayout";
 import styled from "styled-components";
 import StepWrapper from "../../components/StepWrapper";
 import {Button, TextField} from "@mui/material";
+import FileUpload from "../../components/FileUpload";
 
 const Step1 = styled.div`
   display: flex;
   flex-direction: column;
 `
-
-const Title = styled.h1``
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -18,6 +17,9 @@ const ButtonContainer = styled.div`
 
 const Create = () => {
     const [activeStep, setActiveStep] = useState<number>(0);
+    const [picture, setPicture] = useState(null);
+    const [audio, setAudio] = useState(null);
+
     const back = () => {
         setActiveStep(prevState => prevState - 1)
     }
@@ -51,10 +53,14 @@ const Create = () => {
 					</Step1>
                 }
                 {activeStep === 1 &&
-					<Title>Step 2</Title>
+					<FileUpload setFile={setPicture} accept="image/*">
+                        Upload picture
+                    </FileUpload>
                 }
                 {activeStep === 2 &&
-					<Title>Step 3</Title>
+					<FileUpload setFile={setAudio} accept="audio/*">
+						Upload audio
+					</FileUpload>
                 }
             </StepWrapper>
             <ButtonContainer>
