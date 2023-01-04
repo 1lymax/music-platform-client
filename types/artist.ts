@@ -5,3 +5,7 @@ export interface IArtist {
     tracks?: string[];
     albums?: string[];
 }
+
+export interface ArtistState {
+    artists: IArtist[]
+}
