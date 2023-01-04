@@ -1,18 +1,23 @@
-import React from 'react';
+import React, {FC} from 'react';
 import MainLayout from "../../layouts/MainLayout";
 import styled from "styled-components";
 import {Button} from "@mui/material";
 import {useRouter} from "next/router";
 import {ITrack} from "../../types/track";
 import TrackList from "../../components/TrackList";
-import {useActions} from "../../hooks/useActions";
+import {getAllTracks, trackApi} from "../../store/api/track";
+import {wrapper} from "../../store";
+
+interface IndexProps {
+    tracks: ITrack[];
+    status: string;
+}
+
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
-
 `
-
 const Card = styled.div`
   width: 900px;
   border: 1px solid lightgray;
@@ -30,44 +35,19 @@ const CardContent = styled.div`
 const Title = styled.h1`
 `
 
-const Index = () => {
+const Index: FC<IndexProps> = ({tracks, status}) => {
+    console.log(tracks)
     const router = useRouter()
-    const {} = useActions()
-    const tracks: ITrack[] = [
-        {
-            _id: '63ac369be5a74b86da15938d',
-            name: "Maginificent",
-            text: "123-456-789",
-            listens: 4,
-            comments: [],
-            artistId: {_id: '63ac8ba333a49ff8b4e05aea', name: 'U2'},
-            audio: "http://localhost:5000/audio/ecec8d10-8820-11ed-9f3b-eb05f7cd6964.mp3",
-            picture: "http://localhost:5000/image/ece56120-8820-11ed-9f3b-eb05f7cd6964.jpg",
-            albumId: {}
-        },
-        {
-            _id: '63ac369be5a74b86da10938d',
-            name: "Mysterious ways",
-            text: "123-456-789",
-            listens: 4,
-            comments: [],
-            artistId: {_id: '63ac8ba333a49ff8b4e05aea'},
-            audio: "http://localhost:5000/audio/ecec8d10-8820-11ed-9f3b-eb05f7cd6964.mp3",
-            picture: "http://localhost:5000/image/ece56120-8820-11ed-9f3b-eb05f7cd6964.jpg",
-            albumId: {_id: '63ad8d8c0c3370c1914a96e1'}
-        },
-        {
-            _id: '63ac369be5a44b86da15938d',
-            name: "360 degree",
-            text: "123-456-789",
-            listens: 4,
-            comments: [],
-            artistId: {_id: '63ac8ba333a49ff8b4e05aea'},
-            audio: "http://localhost:5000/audio/ecec8d10-8820-11ed-9f3b-eb05f7cd6964.mp3",
-            picture: "http://localhost:5000/image/ece56120-8820-11ed-9f3b-eb05f7cd6964.jpg",
-            albumId: {_id: '63ad8d8c0c3370c1914a96e1'}
-        },
-    ]
+    //const {setTracks} = useTrackActions()
+    //const {tracks} = useTypedSelector(state => state.track)
+    //const {error, data} = useGetAllTracksQuery()
+
+    // if (error) {
+    //     console.log(error)
+    //     return <MainLayout>
+    //         <h1>Произошла ошибка</h1>
+    //     </MainLayout>
+    // }
 
     return (
         <MainLayout>
@@ -79,7 +59,9 @@ const Index = () => {
                             Upload
                         </Button>
                     </CardContent>
-                    <TrackList tracks={tracks}/>
+                    {tracks &&
+						<TrackList tracks={tracks}/>
+                    }
                 </Card>
 
             </Container>
@@ -89,3 +71,15 @@ const Index = () => {
 };
 
 export default Index;
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
+    const response = await store.dispatch(getAllTracks.initiate())
+    await Promise.all(store.dispatch(trackApi.util.getRunningQueriesThunk()))
+    console.log(response)
+    return {
+        props: {
+            tracks: response.data,
+            status: response.status
+        }
+    }
+})

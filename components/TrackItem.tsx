@@ -4,7 +4,7 @@ import {ITrack} from "../types/track";
 import IconButton from "@mui/material/IconButton";
 import {Delete, Pause, PlayArrow} from '@mui/icons-material';
 import {useRouter} from "next/router";
-import {useActions} from "../hooks/useActions";
+import {usePlayerActions} from "../hooks/usePlayerActions";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import convertHMS from "../utils/convertHMS";
 
@@ -43,7 +43,7 @@ const Artist = styled.div`
 
 const TrackItem: FC<TrackItemProps> = ({track }) => {
     const router = useRouter()
-    const {playTrack, pauseTrack, setActive} = useActions()
+    const {playTrack, pauseTrack, setActive} = usePlayerActions()
     const {active, pause, duration, currentTime} = useTypedSelector(state => state.player)
 
 

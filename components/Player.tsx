@@ -3,7 +3,7 @@ import {Pause, PlayArrow, VolumeUp} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import styled from "styled-components";
 import ProgressBar from "./ProgressBar";
-import {useActions} from "../hooks/useActions";
+import {usePlayerActions} from "../hooks/usePlayerActions";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 
 
@@ -63,7 +63,7 @@ let audio: HTMLAudioElement
 const Player: FC<PlayerProps> = () => {
 
     const {pause, duration, volume, active, currentTime} = useTypedSelector(state => state.player)
-    const {pauseTrack, playTrack, setVolume, setDuration, setCurrentTime} = useActions()
+    const {pauseTrack, playTrack, setVolume, setDuration, setCurrentTime} = usePlayerActions()
 
     useEffect(() => {
         if (!audio) {
@@ -121,11 +121,11 @@ const Player: FC<PlayerProps> = () => {
                 <Image src={active?.picture}/>
                 <Info>
                     <Title>
-                        {active?.name} - {active?.artistId.name}
+                        {active?.name} - {active?.artistId?.name}
                     </Title>
                     {active?.albumId?.name &&
 						<SubTitle>
-							({active?.albumId.name})
+							({active?.albumId?.name})
 						</SubTitle>
                     }
                 </Info>

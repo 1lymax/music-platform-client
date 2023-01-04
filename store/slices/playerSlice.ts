@@ -37,7 +37,7 @@ export const playerSlice = createSlice({
     },
     extraReducers: {
         [HYDRATE]: (state, action) => {
-            console.log('HYDRATE', state, action.payload);
+            //console.log('HYDRATE', state, action.payload);
             return {
                 ...state,
                 ...action.payload.player,
@@ -46,6 +46,6 @@ export const playerSlice = createSlice({
     },
 })
 
-export const actionCreators = playerSlice.actions
+export const playerActionCreators = playerSlice.actions
 
 export default playerSlice.reducer

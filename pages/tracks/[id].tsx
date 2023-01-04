@@ -57,7 +57,6 @@ const TrackPage = () => {
     }
     const router = useRouter()
 
-
     return (
         <MainLayout>
             <Container>

@@ -29,3 +29,7 @@ export interface ITrack {
     audio: string;
     comments: IComment[]
 }
+
+export interface TrackState {
+    tracks: ITrack[];
+}
