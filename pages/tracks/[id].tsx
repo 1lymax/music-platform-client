@@ -1,14 +1,20 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {ITrack} from "../../types/track";
 import MainLayout from "../../layouts/MainLayout";
 import {useRouter} from "next/router";
 import styled from "styled-components";
 import {Button, TextField} from "@mui/material";
+import {wrapper} from "../../store";
+import {getTrackById} from "../../store/api/track";
+
+interface PageProps {
+    track: ITrack;
+    status: string
+}
 
 const Container = styled.div`
   margin: 20px;
 `
-
 const Card = styled.div`
   margin: 20px 0;
   display: flex;
@@ -43,20 +49,9 @@ const CommentText = styled.p`
 `
 
 
-const TrackPage = () => {
-    const track: ITrack = {
-        _id: '63ac369be5a74b86da15938d',
-        name: "Maginificent",
-        text: "123-456-789",
-        listens: 4,
-        comments: [],
-        artistId: {_id: '63ac8ba333a49ff8b4e05aea', name: "U2"},
-        audio: "http://localhost:5000/audio/ecec8d10-8820-11ed-9f3b-eb05f7cd6964.mp3",
-        picture: "http://localhost:5000/image/ece56120-8820-11ed-9f3b-eb05f7cd6964.jpg",
-        albumId: {_id: '63ad8d8c0c3370c1914a96e1'}
-    }
-    const router = useRouter()
+const TrackPage: FC<PageProps> = ({track}) => {
 
+    const router = useRouter()
     return (
         <MainLayout>
             <Container>
@@ -66,16 +61,16 @@ const TrackPage = () => {
                     onClick={() => router.back()}
                 >Back to list</Button>
                 <Card>
-                    <Image src={track.picture}/>
+                    <Image src={process.env.NEXT_PUBLIC_API_URL + track?.picture}/>
                     <Info>
-                        <Title>{track.name}</Title>
-                        <SubTitle>Album - {track.albumId.name}</SubTitle>
-                        <SubTitle>Artist - {track.artistId.name}</SubTitle>
-                        <SubTitle>Listens - {track.listens}</SubTitle>
+                        <Title>{track?.name}</Title>
+                        <SubTitle>Album - {track?.albumId?.name}</SubTitle>
+                        <SubTitle>Artist - {track?.artistId?.name}</SubTitle>
+                        <SubTitle>Listens - {track?.listens}</SubTitle>
                     </Info>
                 </Card>
                 <Title>Lyrics</Title>
-                <p>{track.text}</p>
+                <p>{track?.text}</p>
                 <Title>Comments</Title>
                 <InputArea>
                     <TextField
@@ -92,7 +87,7 @@ const TrackPage = () => {
                     <Button variant={"outlined"}>Send</Button>
                 </InputArea>
                 <CommentsContainer>
-                    {track.comments.map(comment =>
+                    {track?.comments?.length && track.comments.map(comment =>
                         <CommentBlock key={comment._id}>
                             <CommentTitle>Author - {comment.username}</CommentTitle>
                             <CommentText>Comment - {comment.text}</CommentText>
@@ -105,3 +100,18 @@ const TrackPage = () => {
 };
 
 export default TrackPage;
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({query}) => {
+    let response
+    if (typeof query.id === "string") {
+        response = await store.dispatch(getTrackById.initiate(query?.id))
+        //await Promise.all(store.dispatch(trackApi.util.getRunningQueriesThunk()))
+    }
+
+    return {
+        props: {
+            track: response?.data,
+            status: response?.status
+        }
+    }
+})

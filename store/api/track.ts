@@ -14,11 +14,13 @@ export const trackApi = createApi({
         getAllTracks: builder.query<ITrack[], void>({
             query: () => `track/`,
         }),
+        getTrackById: builder.query<ITrack, string>({
+            query: (id) => `track/${id}`,
+        }),
     }),
 })
 
 
 export const { useGetAllTracksQuery } = trackApi
 
-
-export const { getAllTracks } = trackApi.endpoints
+export const { getAllTracks, getTrackById } = trackApi.endpoints

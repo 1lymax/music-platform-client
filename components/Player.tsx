@@ -54,6 +54,7 @@ const VolumeContainer = styled.div`
   display: flex;
   margin-left: auto;
   justify-content: space-between;
+  align-items: center;
   width: 15%;
 `
 
@@ -76,7 +77,7 @@ const Player: FC<PlayerProps> = () => {
 
     const setAudio = () => {
         if (active) {
-            audio.src = active.audio
+            audio.src = process.env.NEXT_PUBLIC_API_URL + active.audio
             audio.volume = volume / 100
             audio.onloadedmetadata = () => {
                 setDuration(Math.ceil(audio.duration))
@@ -87,10 +88,10 @@ const Player: FC<PlayerProps> = () => {
         }
     }
 
-    const play = () => {
+    const play = async () => {
         if (pause) {
             playTrack()
-            audio.play()
+            await audio.play()
         } else {
             pauseTrack()
             audio.pause()
@@ -118,7 +119,7 @@ const Player: FC<PlayerProps> = () => {
                 }
             </IconButton>
             <InfoContainer>
-                <Image src={active?.picture}/>
+                <Image src={process.env.NEXT_PUBLIC_API_URL + active?.picture}/>
                 <Info>
                     <Title>
                         {active?.name} - {active?.artistId?.name}

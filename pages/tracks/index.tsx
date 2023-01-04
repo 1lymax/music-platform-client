@@ -13,7 +13,6 @@ interface IndexProps {
     status: string;
 }
 
-
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -35,8 +34,7 @@ const CardContent = styled.div`
 const Title = styled.h1`
 `
 
-const Index: FC<IndexProps> = ({tracks, status}) => {
-    console.log(tracks)
+const Index: FC<IndexProps> = ({tracks}) => {
     const router = useRouter()
     //const {setTracks} = useTrackActions()
     //const {tracks} = useTypedSelector(state => state.track)
@@ -75,7 +73,6 @@ export default Index;
 export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
     const response = await store.dispatch(getAllTracks.initiate())
     await Promise.all(store.dispatch(trackApi.util.getRunningQueriesThunk()))
-    console.log(response)
     return {
         props: {
             tracks: response.data,

@@ -66,7 +66,7 @@ const TrackItem: FC<TrackItemProps> = ({track }) => {
                     : <PlayArrow/>
                 }
             </IconButton>
-            <Image width={70} height={70} src={track.picture}/>
+            <Image width={70} height={70} src={process.env.NEXT_PUBLIC_API_URL + track.picture}/>
             <TrackWrapper>
                 <TrackName>{track.name}</TrackName>
                 <Album>{track.albumId?.name}</Album>
