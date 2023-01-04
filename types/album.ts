@@ -5,3 +5,7 @@ export interface IAlbum {
     picture: string;
     tracks?: string[];
 }
+
+export interface AlbumState {
+    albums: IAlbum[]
+}
