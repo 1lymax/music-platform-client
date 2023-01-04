@@ -3,16 +3,26 @@ import {playerSlice} from "./slices/playerSlice";
 import {createWrapper} from "next-redux-wrapper";
 import {trackApi} from "./api/track";
 import {trackSlice} from "./slices/trackSlice";
+import {artistApi} from "./api/artist";
+import {albumApi} from "./api/album";
+import {artistSlice} from "./slices/artistSlice";
 
 const makeStore = () =>
     configureStore({
         reducer: {
             [playerSlice.name]: playerSlice.reducer,
             [trackSlice.name]: trackSlice.reducer,
-            [trackApi.reducerPath]: trackApi.reducer
+            [artistSlice.name]: artistSlice.reducer,
+
+            [trackApi.reducerPath]: trackApi.reducer,
+            [artistApi.reducerPath]: artistApi.reducer,
+            [albumApi.reducerPath]: albumApi.reducer
         },
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(trackApi.middleware),
+            getDefaultMiddleware()
+                .concat(trackApi.middleware)
+                .concat(artistApi.middleware)
+                .concat(albumApi.middleware),
         devTools: true,
     });
 
