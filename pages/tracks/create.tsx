@@ -48,8 +48,8 @@ const Create: FC = () => {
     const {artists} = useTypedSelector(state => state.artist)
     const {albums} = useTypedSelector(state => state.album)
 
-    const {data: artistsFetching, isSuccess: artistsSuccess} = useGetAllArtistsQuery()
-    const {data: albumsFetching, isSuccess: albumsSuccess} = useSearchAlbumQuery(
+    const {} = useGetAllArtistsQuery()
+    const {} = useSearchAlbumQuery(
         {artistId: artist?._id},
         {refetchOnMountOrArgChange: true})
     const [createTrack, result] = useCreateTrackMutation()
@@ -92,8 +92,6 @@ const Create: FC = () => {
         else
             return 'Select artist first'
     }
-
-    console.log(picture)
 
     return (
         <MainLayout>
@@ -175,15 +173,3 @@ const Create: FC = () => {
 };
 
 export default Create;
-
-// export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
-//     const artists = await store.dispatch(getAllArtists.initiate())
-//     const albums = await store.dispatch(getAllAlbums.initiate())
-//     //await Promise.all(store.dispatch(getAllArtists.util.getRunningQueriesThunk()))
-//     console.log(artists)
-//     return {
-//         props: {
-//             artists: artists.data
-//         }
-//     }
-// })
