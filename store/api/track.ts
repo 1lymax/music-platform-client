@@ -17,10 +17,18 @@ export const trackApi = createApi({
         getTrackById: builder.query<ITrack, string>({
             query: (id) => `track/${id}`,
         }),
+        createTrack: builder.mutation<ITrack, FormData>({
+            query: (args) => ({
+                url: `track/`,
+                method: 'POST',
+                body: args
+            }),
+        })
+
     }),
 })
 
 
-export const { useGetAllTracksQuery } = trackApi
+export const { useGetAllTracksQuery, useCreateTrackMutation } = trackApi
 
 export const { getAllTracks, getTrackById } = trackApi.endpoints
