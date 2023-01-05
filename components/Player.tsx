@@ -8,7 +8,7 @@ import {useTypedSelector} from "../hooks/useTypedSelector";
 
 
 interface PlayerProps {
-    //active: boolean
+
 }
 
 const Container = styled.div`
@@ -20,7 +20,6 @@ const Container = styled.div`
   align-items: center;
   padding: 0 10px;
   background-color: lightgray;
-  //justify-content: space-around;
 `
 
 const InfoContainer = styled.div`

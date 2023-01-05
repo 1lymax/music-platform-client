@@ -13,6 +13,7 @@ import {IAlbum} from "../../types/album";
 import {useCreateTrackMutation} from "../../store/api/track";
 import FileUploader from "../../components/FileUploader";
 import ImagePreview from "../../components/UI/ImagePreview";
+import AudioPreview from "../../components/UI/AudioPreview";
 
 
 const Step = styled.div`
@@ -52,7 +53,7 @@ const Create: FC = () => {
         {artistId: artist?._id},
         {refetchOnMountOrArgChange: true})
     const [createTrack, result] = useCreateTrackMutation()
-
+    const {} = useCreateTrackMutation()
 
     const dragEnterHandler = (e: React.DragEvent) => {
         e.preventDefault()
@@ -156,7 +157,7 @@ const Create: FC = () => {
                             accept="audio/*"
 						>
                             {audio &&
-								<ImagePreview file={picture}/>
+								<AudioPreview file={audio}/>
                             }
 							<>Drag'n'Drop here</>
 
