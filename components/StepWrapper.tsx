@@ -14,7 +14,7 @@ const CardBlock = styled.div`
   display: flex;
   justify-content: center;
   margin: 70px 0;
-  height: 270px;
+  height: auto;
 `
 
 const Card = styled.div`
