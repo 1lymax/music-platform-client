@@ -1,9 +1,9 @@
 import React, {FC} from 'react';
-import MainLayout from "../../layouts/MainLayout";
 import styled from "styled-components";
 import {Button} from "@mui/material";
 import {useRouter} from "next/router";
 import {ITrack} from "../../types/track";
+import MainLayout from "../../layouts/MainLayout";
 import TrackList from "../../components/TrackList";
 import {getAllTracks, trackApi} from "../../store/api/track";
 import {wrapper} from "../../store";
