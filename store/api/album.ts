@@ -1,6 +1,7 @@
 import {HYDRATE} from "next-redux-wrapper";
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {IAlbum} from "../../types/album";
+import {setAlbums} from "../slices/albumSlice";
 
 export const albumApi = createApi({
     reducerPath: 'albumApi',
@@ -14,19 +15,30 @@ export const albumApi = createApi({
         getAllAlbums: builder.query<IAlbum[], void>({
             query: () => `album/`,
         }),
+
         getAlbumById: builder.query<IAlbum, string>({
             query: (id) => `album/${id}`,
         }),
-        searchAlbum: builder.query<IAlbum[], {}>({
-            query: (query) => ({
-                url: `album/`,
-                params: query
-        }),
+
+        searchAlbum: builder.query<IAlbum[], any>({
+            query: (arg) => ({
+                url: `album/search/artist`,
+                params: arg
+            }),
+            onCacheEntryAdded(arg, {dispatch, cacheDataLoaded} ): Promise<void> | void {
+                try {
+                    cacheDataLoaded.then(result => {
+                        dispatch(setAlbums(result.data))})
+                }catch (e) {
+                    console.log(e)
+                }
+
+            }
         }),
     }),
 })
 
 
-export const { useGetAllAlbumsQuery, useGetAlbumByIdQuery, useSearchAlbumQuery } = albumApi
+export const {useGetAllAlbumsQuery, useGetAlbumByIdQuery, useSearchAlbumQuery} = albumApi
 
-export const { getAllAlbums, getAlbumById } = albumApi.endpoints
+export const {getAllAlbums, getAlbumById} = albumApi.endpoints

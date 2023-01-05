@@ -27,6 +27,8 @@ export const artistSlice = createSlice({
     },
 })
 
+
+export const {setArtists} = artistSlice.actions
 export const artistActionCreators = artistSlice.actions
 
 
