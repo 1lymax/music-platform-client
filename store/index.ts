@@ -6,6 +6,7 @@ import {trackSlice} from "./slices/trackSlice";
 import {artistApi} from "./api/artist";
 import {albumApi} from "./api/album";
 import {artistSlice} from "./slices/artistSlice";
+import {albumSlice} from "./slices/albumSlice";
 
 const makeStore = () =>
     configureStore({
@@ -13,6 +14,7 @@ const makeStore = () =>
             [playerSlice.name]: playerSlice.reducer,
             [trackSlice.name]: trackSlice.reducer,
             [artistSlice.name]: artistSlice.reducer,
+            [albumSlice.name]: albumSlice.reducer,
 
             [trackApi.reducerPath]: trackApi.reducer,
             [artistApi.reducerPath]: artistApi.reducer,
