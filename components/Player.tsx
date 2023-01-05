@@ -2,7 +2,7 @@ import React, {ChangeEvent, FC, useEffect} from 'react';
 import {Pause, PlayArrow, VolumeUp} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import styled from "styled-components";
-import ProgressBar from "./ProgressBar";
+import ProgressBar from "./UI/ProgressBar";
 import {usePlayerActions} from "../hooks/usePlayerActions";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 

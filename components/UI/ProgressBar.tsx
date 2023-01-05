@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FC} from 'react';
 import styled from "styled-components";
-import convertHMS from '../utils/convertHMS'
+import convertHMS from '../../utils/convertHMS'
 
 interface ProgressBarProps {
     left: number;
