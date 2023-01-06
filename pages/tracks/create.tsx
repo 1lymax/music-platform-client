@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import MainLayout from "../../layouts/MainLayout";
 import styled from "styled-components";
 import StepWrapper from "../../components/StepWrapper";
@@ -14,6 +14,9 @@ import {useCreateTrackMutation} from "../../store/api/track";
 import FileUploader from "../../components/FileUploader";
 import ImagePreview from "../../components/UI/ImagePreview";
 import AudioPreview from "../../components/UI/AudioPreview";
+import {useSuccessMessage} from "../../hooks/useSuccessMessage";
+import {useErrorMessage} from "../../hooks/useErrorMessage";
+import {useRouter} from "next/router";
 
 
 const Step = styled.div`
@@ -35,6 +38,7 @@ const ButtonContainer = styled.div`
 `
 
 const Create: FC = () => {
+    const router = useRouter()
     const [album, setAlbum] = useState<IAlbum>();
     const [artist, setArtist] = useState<IArtist>();
     const [audio, setAudio] = useState<any>();
@@ -48,12 +52,21 @@ const Create: FC = () => {
     const {artists} = useTypedSelector(state => state.artist)
     const {albums} = useTypedSelector(state => state.album)
 
-    const {} = useGetAllArtistsQuery()
-    const {} = useSearchAlbumQuery(
-        {artistId: artist?._id},
-        {refetchOnMountOrArgChange: true})
-    const [createTrack, result] = useCreateTrackMutation()
-    const {} = useCreateTrackMutation()
+    useGetAllArtistsQuery()
+    useSearchAlbumQuery(
+        { artistId: artist?._id }, { refetchOnMountOrArgChange: true })
+
+    const [createTrack, { isSuccess, error, }] = useCreateTrackMutation()
+
+    useSuccessMessage('Track successfully added', isSuccess)
+
+    useEffect(() => {
+        if (isSuccess)
+            router.push('/tracks')
+    }, [isSuccess]);
+
+    useErrorMessage('Add track error', error)
+
 
     const dragEnterHandler = (e: React.DragEvent) => {
         e.preventDefault()
@@ -93,6 +106,7 @@ const Create: FC = () => {
             return 'Select artist first'
     }
 
+
     return (
         <MainLayout>
             <StepWrapper activeStep={activeStep}>
@@ -116,7 +130,7 @@ const Create: FC = () => {
 							>Add..</Button>
 						</SelectContainer>
 
-                        <TextField
+						<TextField
                             {...text}
 							rows={4}
 							multiline
@@ -134,14 +148,14 @@ const Create: FC = () => {
 							dragEnter={dragEnter}
 							dragEnterHandler={dragEnterHandler}
 							dragLeaveHandler={dragLeaveHandler}
-                            accept="image/*"
-                         >
+							accept="image/*"
+						>
                             {picture &&
 								<ImagePreview file={picture}/>
                             }
-                                <>Drag'n'Drop here</>
+							<>Drag'n'Drop here</>
 
-                        </FileUploader>
+						</FileUploader>
 					</Step>
                 }
                 {activeStep === 2 &&
@@ -152,7 +166,7 @@ const Create: FC = () => {
 							dragEnter={dragEnter}
 							dragEnterHandler={dragEnterHandler}
 							dragLeaveHandler={dragLeaveHandler}
-                            accept="audio/*"
+							accept="audio/*"
 						>
                             {audio &&
 								<AudioPreview file={audio}/>
