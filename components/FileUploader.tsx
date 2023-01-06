@@ -1,64 +1,80 @@
-import {Box} from "@mui/material";
-import React, {FC, useRef} from 'react';
+import React, {FC, useRef, useState} from 'react';
+import styled from "styled-components";
 
 interface FileUploaderProps {
-    dragEnter: boolean;
-    dragEnterHandler: (e: React.DragEvent) => void;
-    dragLeaveHandler: (e: React.DragEvent) => void;
     setFile: (file: File) => void;
     accept: string
     children: React.ReactNode
 }
 
-const FileUploader: FC<FileUploaderProps> = ({
-                                                 dragEnter,
-                                                 dragEnterHandler,
-                                                 dragLeaveHandler,
-                                                 setFile,
-                                                 children,
-                                                 accept
-                                             }) => {
+const Container = styled.div<{ drag: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: ${props => props.drag ? '95%' : '20%'};
+  margin: 20px 0;
+  padding: 20px;
+  border: dashed 4px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  //justify-content: center;
+  flex-direction: column;
+`
+
+const DragContainer = styled.div`
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+`
+
+const ChildrenContainer = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+`
+
+const FileUploader: FC<FileUploaderProps> = ({setFile, children, accept}) => {
     const ref = useRef<HTMLInputElement>(null)
+    const [dragEnter, setDragEnter] = useState(false);
 
     const uploadButtonHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        uploadFiles(e.target.files)
+        if (e.target.files)
+            setFile(e.target.files[0])
     }
 
     const dropHandler = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
         e.stopPropagation()
-        uploadFiles(e.dataTransfer.files)
-        dragLeaveHandler(e)
-    }
-
-    const uploadFiles = (files: FileList | null) => {
-        if (files) setFile(files[0])
+        setFile(e.dataTransfer.files[0])
+        setDragEnter(false)
     }
 
     return (
-        <Box sx={{
-            width: '100%',
-            height: '80%',
-            minHeight: '200px',
-            margin: '20px 0',
-            padding: '20px',
-            border: 'dashed 4px',
-            borderRadius: '10px',
-            borderColor: 'primary.main',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'column'
-        }}
-             onDragEnter={(e) => dragEnterHandler(e)}
-             onDragLeave={(e) => dragLeaveHandler(e)}
-             onDragOver={(e) => dragEnterHandler(e)}
-             onDrop={(e) => dropHandler(e)}
-             onClick={() => ref.current?.click()}
-        >
-            <input ref={ref} hidden type="file" accept={accept} onChange={uploadButtonHandler}/>
-            {children}
-        </Box>
+        <DragContainer onDragEnter={() => setDragEnter(true)}
+                       onDragOver={(e) => {
+                           e.stopPropagation()
+                           e.preventDefault()
+                           setDragEnter(true)
+                       }}
+                       onDrop={(e) => dropHandler(e)}>
+            <Container drag={dragEnter}
+                       onDragLeave={() => setDragEnter(false)}
+                       onClick={() => ref.current?.click()}>
+                <input ref={ref} hidden type="file" accept={accept} onChange={uploadButtonHandler}/>
+                Drag'n'Drop here or browse...
+            </Container>
+            <ChildrenContainer>
+                {children}
+            </ChildrenContainer>
+        </DragContainer>
     );
 };
 

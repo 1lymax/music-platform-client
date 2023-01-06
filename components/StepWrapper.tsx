@@ -8,12 +8,17 @@ interface StepWrapperProps {
 }
 
 const Container = styled.div`
+  width: 600px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-self: center;
 `
 
 const CardBlock = styled.div`
   display: flex;
   justify-content: center;
-  margin: 70px 0;
+  margin: 40px 0;
   height: auto;
 `
 
@@ -23,6 +28,7 @@ const Card = styled.div`
   margin: 20px;
   padding: 20px;
   width: 600px;
+  min-height: 400px;
   box-shadow: 0 2px 3px lightgray;
 `
 
@@ -37,7 +43,7 @@ const StepWrapper: FC<StepWrapperProps> = ({activeStep, children}) => {
                         key={index}
                         completed={activeStep > index}
                     >
-                        <StepLabel >{step}</StepLabel>
+                        <StepLabel>{step}</StepLabel>
                     </Step>
                 )}
 

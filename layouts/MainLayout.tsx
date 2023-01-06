@@ -4,10 +4,13 @@ import styled from "styled-components";
 import Player from "../components/Player";
 
 const Container = styled.div`
-margin: 40px;
+  margin: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `
 
-const MainLayout: React.FC<{children: any}> = ({children}) => {
+const MainLayout: React.FC<{ children: any }> = ({children}) => {
     return (
         <>
             <Navbar/>

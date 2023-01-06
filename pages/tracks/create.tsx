@@ -17,11 +17,13 @@ import AudioPreview from "../../components/UI/AudioPreview";
 import {useSuccessMessage} from "../../hooks/useSuccessMessage";
 import {useErrorMessage} from "../../hooks/useErrorMessage";
 import {useRouter} from "next/router";
+import AddButton from "../../components/UI/AddButton";
 
 
 const Step = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
 `
 
 const SelectContainer = styled.div`
@@ -35,6 +37,8 @@ const SelectContainer = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  width: 600px;
+  align-self: center;
 `
 
 const Create: FC = () => {
@@ -44,7 +48,6 @@ const Create: FC = () => {
     const [audio, setAudio] = useState<any>();
     const [picture, setPicture] = useState<any>();
     const [activeStep, setActiveStep] = useState<number>(0);
-    const [dragEnter, setDragEnter] = useState<boolean>(false);
 
     const name = useInput('')
     const text = useInput('')
@@ -54,9 +57,9 @@ const Create: FC = () => {
 
     useGetAllArtistsQuery()
     useSearchAlbumQuery(
-        { artistId: artist?._id }, { refetchOnMountOrArgChange: true })
+        {artistId: artist?._id}, {refetchOnMountOrArgChange: true})
 
-    const [createTrack, { isSuccess, error, }] = useCreateTrackMutation()
+    const [createTrack, {isSuccess, error,}] = useCreateTrackMutation()
 
     useSuccessMessage('Track successfully added', isSuccess)
 
@@ -66,19 +69,6 @@ const Create: FC = () => {
     }, [isSuccess]);
 
     useErrorMessage('Add track error', error)
-
-
-    const dragEnterHandler = (e: React.DragEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-        setDragEnter(true)
-    }
-
-    const dragLeaveHandler = (e: React.DragEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-        setDragEnter(false)
-    }
 
     const back = () => {
         setActiveStep(prevState => prevState - 1)
@@ -119,9 +109,7 @@ const Create: FC = () => {
 						/>
 						<SelectContainer>
 							<SelectBox label={'Artist...'} setValue={setArtist} options={artists}/>
-							<Button
-								sx={{marginLeft: '10px'}}
-							>Add..</Button>
+							<AddButton onClick={() => console.log('123')}>Add..</AddButton>
 						</SelectContainer>
 						<SelectContainer>
 							<SelectBox label={albumName()} setValue={setAlbum} options={albums}/>
@@ -143,43 +131,29 @@ const Create: FC = () => {
                 {activeStep === 1 &&
 					<Step>
 						Upload picture
-						<FileUploader
-							setFile={setPicture}
-							dragEnter={dragEnter}
-							dragEnterHandler={dragEnterHandler}
-							dragLeaveHandler={dragLeaveHandler}
-							accept="image/*"
-						>
+						<FileUploader setFile={setPicture} accept="image/*">
                             {picture &&
 								<ImagePreview file={picture}/>
                             }
-							<>Drag'n'Drop here</>
-
 						</FileUploader>
+
 					</Step>
                 }
                 {activeStep === 2 &&
 					<Step>
 						Upload audio track
-						<FileUploader
-							setFile={setAudio}
-							dragEnter={dragEnter}
-							dragEnterHandler={dragEnterHandler}
-							dragLeaveHandler={dragLeaveHandler}
-							accept="audio/*"
-						>
+						<FileUploader setFile={setAudio} accept="audio/*">
                             {audio &&
 								<AudioPreview file={audio}/>
                             }
-							<>Drag'n'Drop here</>
+                        </FileUploader>
 
-						</FileUploader>
 					</Step>
                 }
             </StepWrapper>
             <ButtonContainer>
-                <Button disabled={activeStep === 0} onClick={back}>Back</Button>
-                <Button onClick={next}>Next</Button>
+                <Button variant={"contained"} disabled={activeStep === 0} onClick={back}>Back</Button>
+                <Button variant={"contained"} onClick={next}>{activeStep === 2 ? 'Save' : 'Next'}</Button>
             </ButtonContainer>
 
         </MainLayout>
