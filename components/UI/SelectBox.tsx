@@ -1,8 +1,8 @@
 import {FC} from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import {IArtist} from "../types/artist";
-import {IAlbum} from "../types/album";
+import {IArtist} from "../../types/artist";
+import {IAlbum} from "../../types/album";
 
 interface SelectBoxProps {
     options: IArtist[] | IAlbum[];

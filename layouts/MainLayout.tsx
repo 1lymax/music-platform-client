@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from "../components/Navbar";
+import Navbar from "../components/UI/Navbar";
 import styled from "styled-components";
 import Player from "../components/Player";
 
