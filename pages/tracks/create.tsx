@@ -4,7 +4,7 @@ import styled from "styled-components";
 import StepWrapper from "../../components/StepWrapper";
 import {Button, TextField} from "@mui/material";
 import {useInput} from "../../hooks/useInput";
-import SelectBox from "../../components/SelectBox";
+import SelectBox from "../../components/UI/SelectBox";
 import {useGetAllArtistsQuery} from "../../store/api/artist";
 import {useSearchAlbumQuery} from "../../store/api/album";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
@@ -18,6 +18,7 @@ import {useSuccessMessage} from "../../hooks/useSuccessMessage";
 import {useErrorMessage} from "../../hooks/useErrorMessage";
 import {useRouter} from "next/router";
 import AddButton from "../../components/UI/AddButton";
+import {Add} from "@mui/icons-material";
 
 
 const Step = styled.div`
@@ -30,7 +31,7 @@ const SelectContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `
 
 
@@ -96,7 +97,6 @@ const Create: FC = () => {
             return 'Select artist first'
     }
 
-
     return (
         <MainLayout>
             <StepWrapper activeStep={activeStep}>
@@ -105,17 +105,18 @@ const Create: FC = () => {
 						<TextField
                             {...name}
 							label={"Track title"}
-							sx={{marginBottom: '10px'}}
+							sx={{marginBottom: '15px'}}
 						/>
 						<SelectContainer>
 							<SelectBox label={'Artist...'} setValue={setArtist} options={artists}/>
-							<AddButton onClick={() => console.log('123')}>Add..</AddButton>
+							<AddButton icon={<Add/>}
+
+                                       onClick={() => console.log('123')}>Add...</AddButton>
 						</SelectContainer>
 						<SelectContainer>
 							<SelectBox label={albumName()} setValue={setAlbum} options={albums}/>
-							<Button
-								sx={{marginLeft: '10px'}}
-							>Add..</Button>
+							<AddButton icon={<Add/>}
+                                       onClick={() => console.log('123')}>Add...</AddButton>
 						</SelectContainer>
 
 						<TextField
@@ -146,7 +147,7 @@ const Create: FC = () => {
                             {audio &&
 								<AudioPreview file={audio}/>
                             }
-                        </FileUploader>
+						</FileUploader>
 
 					</Step>
                 }
