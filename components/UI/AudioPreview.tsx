@@ -28,7 +28,6 @@ const Right = styled.div`
 
 const AudioPreview: FC<AudioPreviewProps> = ({file}) => {
 
-    console.log(file)
     return (
         <Container>
             <Row>File information:</Row>

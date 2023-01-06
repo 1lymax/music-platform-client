@@ -26,7 +26,7 @@ const Image = styled.img``
 const TrackWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 60%;
   margin: 0 20px;
 `
 

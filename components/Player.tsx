@@ -87,13 +87,19 @@ const Player: FC<PlayerProps> = () => {
         }
     }
 
+    useEffect(() => {
+        if (pause) {
+            audio.pause()
+        } else {
+            audio.play()
+        }
+    }, [pause]);
+
     const play = async () => {
         if (pause) {
             playTrack()
-            await audio.play()
         } else {
             pauseTrack()
-            audio.pause()
         }
     }
 
