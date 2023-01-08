@@ -19,7 +19,7 @@ import {useErrorMessage} from "../../hooks/useErrorMessage";
 import {useRouter} from "next/router";
 import AddButton from "../../components/UI/AddButton";
 import {Add} from "@mui/icons-material";
-
+import AddArtistDialog from "../../components/AddArtistDialog";
 
 const Step = styled.div`
   display: flex;
@@ -49,6 +49,7 @@ const Create: FC = () => {
     const [audio, setAudio] = useState<any>();
     const [picture, setPicture] = useState<any>();
     const [activeStep, setActiveStep] = useState<number>(0);
+    const [artistDialog, setArtistDialog] = useState(false);
 
     const name = useInput('')
     const text = useInput('')
@@ -57,19 +58,19 @@ const Create: FC = () => {
     const {albums} = useTypedSelector(state => state.album)
 
     useGetAllArtistsQuery()
-    useSearchAlbumQuery(
-        {artistId: artist?._id}, {refetchOnMountOrArgChange: true})
+    useSearchAlbumQuery({artistId: artist?._id})
 
-    const [createTrack, {isSuccess, error,}] = useCreateTrackMutation()
+    const [createTrack, {isSuccess, error, }] = useCreateTrackMutation()
 
     useSuccessMessage('Track successfully added', isSuccess)
+    useErrorMessage('Add track error', error)
 
     useEffect(() => {
         if (isSuccess)
             router.push('/tracks')
     }, [isSuccess]);
 
-    useErrorMessage('Add track error', error)
+
 
     const back = () => {
         setActiveStep(prevState => prevState - 1)
@@ -111,7 +112,7 @@ const Create: FC = () => {
 							<SelectBox label={'Artist...'} setValue={setArtist} options={artists}/>
 							<AddButton icon={<Add/>}
 
-                                       onClick={() => console.log('123')}>Add...</AddButton>
+                                       onClick={() => setArtistDialog(true)}>Add...</AddButton>
 						</SelectContainer>
 						<SelectContainer>
 							<SelectBox label={albumName()} setValue={setAlbum} options={albums}/>
@@ -156,7 +157,7 @@ const Create: FC = () => {
                 <Button variant={"contained"} disabled={activeStep === 0} onClick={back}>Back</Button>
                 <Button variant={"contained"} onClick={next}>{activeStep === 2 ? 'Save' : 'Next'}</Button>
             </ButtonContainer>
-
+            <AddArtistDialog open={artistDialog} setOpen={setArtistDialog}/>
         </MainLayout>
     );
 };
