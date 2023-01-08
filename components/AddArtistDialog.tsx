@@ -40,8 +40,8 @@ const AddArtistDialog: FC<AddArtistDialogProps> = ({open, setOpen}) => {
         setOpen(false);
     };
 
-    useSuccessMessage('Track successfully added', isSuccess)
-    useErrorMessage('Add track error', error)
+    useSuccessMessage('Artist successfully added', isSuccess)
+    useErrorMessage('Add artist error', error)
 
     useEffect(() => {
         if (isSuccess) {
