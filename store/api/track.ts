@@ -23,6 +23,7 @@ export const trackApi = createApi({
                 method: 'POST',
                 body: args
             }),
+
         })
 
     }),
