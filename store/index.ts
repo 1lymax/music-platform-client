@@ -1,6 +1,6 @@
-import {configureStore} from "@reduxjs/toolkit";
+import {configureStore, createAction} from "@reduxjs/toolkit";
 import {playerSlice} from "./slices/playerSlice";
-import {createWrapper} from "next-redux-wrapper";
+import {createWrapper, HYDRATE} from "next-redux-wrapper";
 import {trackApi} from "./api/track";
 import {trackSlice} from "./slices/trackSlice";
 import {artistApi} from "./api/artist";
@@ -29,9 +29,7 @@ const makeStore = () =>
     });
 
 
-
 export type AppStore = ReturnType<typeof makeStore>;
 export type AppState = ReturnType<AppStore['getState']>;
 export const wrapper = createWrapper<AppStore>(makeStore);
-
-//export const selectSubject = (id: any) => (state: AppState) => state?.[playerSlice.name]?.[id];
+export const APP_HYDRATE = createAction<AppState>(HYDRATE);
