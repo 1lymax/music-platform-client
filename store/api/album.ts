@@ -11,10 +11,11 @@ export const albumApi = createApi({
             return action.payload[reducerPath]
         }
     },
-    tagTypes: ['albums'],
+    tagTypes: ['album'],
     endpoints: (builder) => ({
         getAllAlbums: builder.query<IAlbum[], void>({
             query: () => `album/`,
+            providesTags: ['album'],
         }),
 
         getAlbumById: builder.query<IAlbum, string>({
@@ -36,10 +37,18 @@ export const albumApi = createApi({
 
             }
         }),
+        createAlbum: builder.mutation<IAlbum, FormData>({
+            query: (args) => ({
+                url: `album/`,
+                method: 'POST',
+                body: args
+            }),
+            invalidatesTags: ['album'],
+        })
     }),
 })
 
 
-export const {useGetAllAlbumsQuery, useGetAlbumByIdQuery, useSearchAlbumQuery} = albumApi
+export const {useGetAllAlbumsQuery, useGetAlbumByIdQuery, useSearchAlbumQuery, useCreateAlbumMutation} = albumApi
 
 export const {getAllAlbums, getAlbumById} = albumApi.endpoints

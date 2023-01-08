@@ -20,6 +20,7 @@ import {useRouter} from "next/router";
 import AddButton from "../../components/UI/AddButton";
 import {Add} from "@mui/icons-material";
 import AddArtistDialog from "../../components/AddArtistDialog";
+import AddAlbumDialog from "../../components/AddAlbumDialog";
 
 const Step = styled.div`
   display: flex;
@@ -33,7 +34,6 @@ const SelectContainer = styled.div`
   align-items: center;
   margin-bottom: 15px;
 `
-
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -50,6 +50,7 @@ const Create: FC = () => {
     const [picture, setPicture] = useState<any>();
     const [activeStep, setActiveStep] = useState<number>(0);
     const [artistDialog, setArtistDialog] = useState(false);
+    const [albumDialog, setAlbumDialog] = useState(false);
 
     const name = useInput('')
     const text = useInput('')
@@ -117,7 +118,7 @@ const Create: FC = () => {
 						<SelectContainer>
 							<SelectBox label={albumName()} setValue={setAlbum} options={albums}/>
 							<AddButton icon={<Add/>}
-                                       onClick={() => console.log('123')}>Add...</AddButton>
+                                       onClick={() => setAlbumDialog(true)}>Add...</AddButton>
 						</SelectContainer>
 
 						<TextField
@@ -158,6 +159,7 @@ const Create: FC = () => {
                 <Button variant={"contained"} onClick={next}>{activeStep === 2 ? 'Save' : 'Next'}</Button>
             </ButtonContainer>
             <AddArtistDialog open={artistDialog} setOpen={setArtistDialog}/>
+            <AddAlbumDialog open={albumDialog} setOpen={setAlbumDialog}/>
         </MainLayout>
     );
 };
