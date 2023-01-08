@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {HYDRATE} from "next-redux-wrapper";
 import {AlbumState} from "../../types/album";
+import {APP_HYDRATE} from "../index";
 
 
 const initialState: AlbumState = {
@@ -16,14 +16,15 @@ export const albumSlice = createSlice({
             state.albums = action.payload
         },
     },
-    extraReducers: {
-        [HYDRATE]: (state, action) => {
-            //console.log('HYDRATE', state, action.payload);
-            return {
-                ...state,
-                ...action.payload.album,
-            };
-        },
+    extraReducers: builder => {
+        builder
+            .addCase(
+                APP_HYDRATE, (state, action) => {
+                    return {
+                        ...state,
+                        ...action.payload.album,
+                    };
+                })
     },
 })
 

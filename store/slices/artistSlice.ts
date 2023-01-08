@@ -1,12 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {HYDRATE} from "next-redux-wrapper";
 import {ArtistState} from "../../types/artist";
+import {APP_HYDRATE} from "../index";
+import {artistApi} from "../api/artist";
 
 
 const initialState: ArtistState = {
     artists: []
 }
-
 
 export const artistSlice = createSlice({
     name: 'artist',
@@ -16,14 +16,19 @@ export const artistSlice = createSlice({
             state.artists = action.payload
         },
     },
-    extraReducers: {
-        [HYDRATE]: (state, action) => {
-            //console.log('HYDRATE', state, action.payload);
-            return {
-                ...state,
-                ...action.payload.artist,
-            };
-        },
+    extraReducers: builder => {
+        builder
+            .addCase(
+                APP_HYDRATE, (state, action) => {
+                    //console.log('HYDRATE', state, action.payload);
+                    return {
+                        ...state,
+                        ...action.payload.artist,
+                    };
+                })
+            .addMatcher(artistApi.endpoints.getAllArtists.matchFulfilled, (state, action) => {
+                state.artists = action.payload
+            })
     },
 })
 

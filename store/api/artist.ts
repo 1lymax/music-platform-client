@@ -1,7 +1,6 @@
 import {HYDRATE} from "next-redux-wrapper";
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {IArtist} from "../../types/artist";
-import {setArtists} from "../slices/artistSlice";
 
 export const artistApi = createApi({
     reducerPath: 'artistApi',
@@ -11,28 +10,29 @@ export const artistApi = createApi({
             return action.payload[reducerPath]
         }
     },
+    tagTypes: ['artist'],
     endpoints: (builder) => ({
         getAllArtists: builder.query<IArtist[], void>({
             query: () => `artist/`,
-            onCacheEntryAdded(arg, {dispatch, cacheDataLoaded} ): Promise<void> | void {
-                try {
-                    cacheDataLoaded.then(result => {
-                            dispatch(setArtists(result.data))})
-                }catch (e) {
-                    console.log(e)
-                }
-
-            }
+            providesTags: ['artist'],
         }),
+
         getArtistById: builder.query<IArtist, string>({
             query: (id) => `artist/${id}`,
         }),
 
-
+        createArtist: builder.mutation<IArtist, FormData>({
+            query: (args) => ({
+                url: `artist/`,
+                method: 'POST',
+                body: args
+            }),
+            invalidatesTags: ['artist'],
+        })
     }),
 })
 
 
-export const { useGetAllArtistsQuery, useGetArtistByIdQuery } = artistApi
+export const {useGetAllArtistsQuery, useGetArtistByIdQuery, useCreateArtistMutation} = artistApi
 
-export const { getAllArtists, getArtistById } = artistApi.endpoints
+export const {getAllArtists, getArtistById} = artistApi.endpoints

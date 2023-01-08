@@ -11,6 +11,7 @@ export const albumApi = createApi({
             return action.payload[reducerPath]
         }
     },
+    tagTypes: ['albums'],
     endpoints: (builder) => ({
         getAllAlbums: builder.query<IAlbum[], void>({
             query: () => `album/`,
