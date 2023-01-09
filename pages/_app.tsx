@@ -4,13 +4,6 @@ import {Provider} from "react-redux";
 import {wrapper} from "../store";
 import {SnackbarProvider} from "notistack";
 
-// Object.assign(globalThis, {
-//     fetch,
-//     Headers,
-//     Request,
-//     Response,
-//     AbortController,
-// });
 
 const MyApp: FC<AppProps> = ({Component, ...rest}) => {
     const {store, props} = wrapper.useWrappedStore(rest);

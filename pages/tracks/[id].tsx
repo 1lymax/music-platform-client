@@ -1,10 +1,11 @@
 import React, {FC} from 'react';
-import {ITrack} from "../../types/track";
-import MainLayout from "../../layouts/MainLayout";
 import {useRouter} from "next/router";
 import styled from "styled-components";
 import {Button, TextField} from "@mui/material";
+
 import {wrapper} from "../../store";
+import {ITrack} from "../../types/track";
+import MainLayout from "../../layouts/MainLayout";
 import {getTrackById} from "../../store/api/track";
 
 interface PageProps {
