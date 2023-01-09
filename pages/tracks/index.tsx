@@ -1,12 +1,13 @@
 import React, {FC} from 'react';
-import styled from "styled-components";
 import {Button} from "@mui/material";
 import {useRouter} from "next/router";
+import styled from "styled-components";
+
+import {wrapper} from "../../store";
 import {ITrack} from "../../types/track";
 import MainLayout from "../../layouts/MainLayout";
 import TrackList from "../../components/TrackList";
 import {getAllTracks, trackApi} from "../../store/api/track";
-import {wrapper} from "../../store";
 
 interface IndexProps {
     tracks: ITrack[];
@@ -36,16 +37,6 @@ const Title = styled.h1`
 
 const Index: FC<IndexProps> = ({tracks}) => {
     const router = useRouter()
-    //const {setTracks} = useTrackActions()
-    //const {tracks} = useTypedSelector(state => state.track)
-    //const {error, data} = useGetAllTracksQuery()
-
-    // if (error) {
-    //     console.log(error)
-    //     return <MainLayout>
-    //         <h1>Произошла ошибка</h1>
-    //     </MainLayout>
-    // }
 
     return (
         <MainLayout>

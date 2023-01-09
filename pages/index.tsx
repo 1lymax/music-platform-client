@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from "styled-components";
-import {Button} from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
 
 const Container = styled.div`
@@ -23,7 +22,6 @@ const Index = () => {
                 <Container>
                     <Title>Welcome to music platform!</Title>
                     <SubTitle>Here is the best music tracks.</SubTitle>
-                    <Button>Buutonn</Button>
                 </Container>
             </MainLayout>
 
