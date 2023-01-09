@@ -1,7 +1,7 @@
-import {HYDRATE} from "next-redux-wrapper";
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {IAlbum} from "../../types/album";
+import {HYDRATE} from "next-redux-wrapper";
 import {setAlbums} from "../slices/albumSlice";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 
 export const albumApi = createApi({
     reducerPath: 'albumApi',

@@ -1,6 +1,6 @@
 import {HYDRATE} from "next-redux-wrapper";
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {IArtist} from "../../types/artist";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 
 export const artistApi = createApi({
     reducerPath: 'artistApi',

@@ -1,26 +1,29 @@
-import React, {FC, useEffect, useState} from 'react';
-import MainLayout from "../../layouts/MainLayout";
 import styled from "styled-components";
-import StepWrapper from "../../components/StepWrapper";
-import {Button, TextField} from "@mui/material";
-import {useInput} from "../../hooks/useInput";
-import SelectBox from "../../components/UI/SelectBox";
-import {useGetAllArtistsQuery} from "../../store/api/artist";
-import {useSearchAlbumQuery} from "../../store/api/album";
-import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {IArtist} from "../../types/artist";
+import React, {FC, useEffect, useState} from 'react';
+
+import {useRouter} from "next/router";
+import {Add} from "@mui/icons-material";
 import {IAlbum} from "../../types/album";
-import {useCreateTrackMutation} from "../../store/api/track";
+import {IArtist} from "../../types/artist";
+import {useInput} from "../../hooks/useInput";
+import {Button, TextField} from "@mui/material";
+import AddAlbum from "../../components/AddAlbum";
+import MainLayout from "../../layouts/MainLayout";
+import AddDialog from "../../components/AddDialog";
+import AddArtist from "../../components/AddArtist";
+import AddButton from "../../components/UI/AddButton";
+import SelectBox from "../../components/UI/SelectBox";
+import StepWrapper from "../../components/StepWrapper";
 import FileUploader from "../../components/FileUploader";
+import {useSearchAlbumQuery} from "../../store/api/album";
+import {useErrorMessage} from "../../hooks/useErrorMessage";
 import ImagePreview from "../../components/UI/ImagePreview";
 import AudioPreview from "../../components/UI/AudioPreview";
+import {useGetAllArtistsQuery} from "../../store/api/artist";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useCreateTrackMutation} from "../../store/api/track";
 import {useSuccessMessage} from "../../hooks/useSuccessMessage";
-import {useErrorMessage} from "../../hooks/useErrorMessage";
-import {useRouter} from "next/router";
-import AddButton from "../../components/UI/AddButton";
-import {Add} from "@mui/icons-material";
-import AddArtistDialog from "../../components/AddArtistDialog";
-import AddAlbumDialog from "../../components/AddAlbumDialog";
+
 
 const Step = styled.div`
   display: flex;
@@ -112,7 +115,6 @@ const Create: FC = () => {
 						<SelectContainer>
 							<SelectBox label={'Artist...'} setValue={setArtist} options={artists}/>
 							<AddButton icon={<Add/>}
-
                                        onClick={() => setArtistDialog(true)}>Add...</AddButton>
 						</SelectContainer>
 						<SelectContainer>
@@ -120,16 +122,14 @@ const Create: FC = () => {
 							<AddButton icon={<Add/>}
                                        onClick={() => setAlbumDialog(true)}>Add...</AddButton>
 						</SelectContainer>
-
-						<TextField
+                        <TextField
                             {...text}
 							rows={4}
 							multiline
 							label={"Track lyrics"}
 							sx={{marginBottom: '10px'}}
 						/>
-
-					</Step>
+                    </Step>
                 }
                 {activeStep === 1 &&
 					<Step>
@@ -150,16 +150,21 @@ const Create: FC = () => {
 								<AudioPreview file={audio}/>
                             }
 						</FileUploader>
-
-					</Step>
+                    </Step>
                 }
             </StepWrapper>
             <ButtonContainer>
                 <Button variant={"contained"} disabled={activeStep === 0} onClick={back}>Back</Button>
                 <Button variant={"contained"} onClick={next}>{activeStep === 2 ? 'Save' : 'Next'}</Button>
             </ButtonContainer>
-            <AddArtistDialog open={artistDialog} setOpen={setArtistDialog}/>
-            <AddAlbumDialog open={albumDialog} setOpen={setAlbumDialog}/>
+            <AddDialog open={artistDialog} setOpen={setArtistDialog} title={'Add new artist'}>
+                <AddArtist setSuccess={setArtistDialog}/>
+            </AddDialog>
+            <AddDialog open={albumDialog} setOpen={setAlbumDialog} title={'Add new album'}>
+                <AddAlbum setSuccess={setAlbumDialog}/>
+            </AddDialog>
+            {/*<AddArtistDialog open={artistDialog} setOpen={setArtistDialog}/>*/}
+            {/*<AddAlbumDialog open={albumDialog} setOpen={setAlbumDialog}/>*/}
         </MainLayout>
     );
 };
