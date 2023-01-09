@@ -12,7 +12,7 @@ const Container = styled.div<{ drag: boolean }>`
   top: 0;
   left: 0;
   width: 100%;
-  height: ${props => props.drag ? '95%' : '20%'};
+  height: ${props => props.drag ? '95%' : '70px'};
   margin: 20px 0;
   padding: 20px;
   border: dashed 4px;
@@ -38,6 +38,10 @@ const ChildrenContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+`
+
+const Title = styled.div`
+  height: 70px;
 `
 
 const FileUploader: FC<FileUploaderProps> = ({setFile, children, accept}) => {
@@ -68,7 +72,8 @@ const FileUploader: FC<FileUploaderProps> = ({setFile, children, accept}) => {
                        onDragLeave={() => setDragEnter(false)}
                        onClick={() => ref.current?.click()}>
                 <input ref={ref} hidden type="file" accept={accept} onChange={uploadButtonHandler}/>
-                Drag'n'Drop here or browse...
+                <Title>Drag'n'Drop here or browse...</Title>
+
             </Container>
             <ChildrenContainer>
                 {children}
