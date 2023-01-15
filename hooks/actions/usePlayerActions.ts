@@ -1,6 +1,6 @@
 import {useDispatch} from "react-redux";
 import {bindActionCreators} from "redux";
-import {playerActionCreators} from "../store/slices/playerSlice";
+import {playerActionCreators} from "../../store/slices/playerSlice";
 
 export const usePlayerActions = () => {
     const dispatch = useDispatch()

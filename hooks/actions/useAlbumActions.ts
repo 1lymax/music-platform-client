@@ -1,6 +1,6 @@
 import {useDispatch} from "react-redux";
 import {bindActionCreators} from "redux";
-import {albumActionCreators} from "../store/slices/albumSlice";
+import {albumActionCreators} from "../../store/slices/albumSlice";
 
 export const useAlbumActions = () => {
     const dispatch = useDispatch()
