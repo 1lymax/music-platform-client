@@ -7,7 +7,9 @@ import {wrapper} from "../../store";
 import {ITrack} from "../../types/track";
 import MainLayout from "../../layouts/MainLayout";
 import TrackList from "../../components/TrackList";
-import {getAllTracks, trackApi} from "../../store/api/track";
+import {getAllTracks, trackApi} from "../../store/api/track.api";
+import FilterTracks from "../../components/FilterTracks";
+import {getAllArtists} from "../../store/api/artist.api";
 
 interface IndexProps {
     tracks: ITrack[];
@@ -17,6 +19,8 @@ interface IndexProps {
 const Container = styled.div`
   display: flex;
   justify-content: center;
+  flex-direction: row;
+  align-items: center;
 `
 const Card = styled.div`
   width: 900px;
@@ -41,6 +45,7 @@ const Index: FC<IndexProps> = ({tracks}) => {
     return (
         <MainLayout>
             <Container>
+                <FilterTracks/>
                 <Card>
                     <CardContent>
                         <Title>Upload track</Title>
@@ -62,12 +67,13 @@ const Index: FC<IndexProps> = ({tracks}) => {
 export default Index;
 
 export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
-    const response = await store.dispatch(getAllTracks.initiate())
+    const tracks = await store.dispatch(getAllTracks.initiate())
+    const artists = await store.dispatch(getAllArtists.initiate())
     await Promise.all(store.dispatch(trackApi.util.getRunningQueriesThunk()))
     return {
         props: {
-            tracks: response.data,
-            status: response.status
+            tracks: tracks.data,
+            status: tracks.status
         }
     }
 })
