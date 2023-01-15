@@ -12,10 +12,12 @@ export const authApi = createApi({
         }
     },
     endpoints: (builder) => ({
-        login: builder.mutation<IUser, IAuth>({
+        login: builder.mutation<{ access_token: string }, IAuth>({
             query: (args) => ({
                 url: `auth/login/`,
                 method: 'POST',
+                credentials: 'include',
+                mode: 'cors',
                 body: args
             }),
 
