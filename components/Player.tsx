@@ -3,7 +3,7 @@ import {Pause, PlayArrow, VolumeUp} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import styled from "styled-components";
 import ProgressBar from "./UI/ProgressBar";
-import {usePlayerActions} from "../hooks/usePlayerActions";
+import {usePlayerActions} from "../hooks/actions/usePlayerActions";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 
 

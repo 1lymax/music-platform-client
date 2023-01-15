@@ -4,7 +4,7 @@ import {ITrack} from "../types/track";
 import IconButton from "@mui/material/IconButton";
 import {Delete, Pause, PlayArrow} from '@mui/icons-material';
 import {useRouter} from "next/router";
-import {usePlayerActions} from "../hooks/usePlayerActions";
+import {usePlayerActions} from "../hooks/actions/usePlayerActions";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import convertHMS from "../utils/convertHMS";
 
