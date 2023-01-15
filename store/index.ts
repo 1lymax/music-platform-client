@@ -1,12 +1,14 @@
 import {configureStore, createAction} from "@reduxjs/toolkit";
 import {playerSlice} from "./slices/playerSlice";
 import {createWrapper, HYDRATE} from "next-redux-wrapper";
-import {trackApi} from "./api/track";
+import {trackApi} from "./api/track.api";
 import {trackSlice} from "./slices/trackSlice";
-import {artistApi} from "./api/artist";
-import {albumApi} from "./api/album";
+import {artistApi} from "./api/artist.api";
+import {albumApi} from "./api/album.api";
 import {artistSlice} from "./slices/artistSlice";
 import {albumSlice} from "./slices/albumSlice";
+import {authApi} from "./api/auth.api";
+import {userSlice} from "./slices/userSlice";
 
 const makeStore = () =>
     configureStore({
@@ -15,16 +17,19 @@ const makeStore = () =>
             [trackSlice.name]: trackSlice.reducer,
             [artistSlice.name]: artistSlice.reducer,
             [albumSlice.name]: albumSlice.reducer,
+            [userSlice.name]: userSlice.reducer,
 
             [trackApi.reducerPath]: trackApi.reducer,
             [artistApi.reducerPath]: artistApi.reducer,
-            [albumApi.reducerPath]: albumApi.reducer
+            [albumApi.reducerPath]: albumApi.reducer,
+            [authApi.reducerPath]: authApi.reducer
         },
         middleware: (getDefaultMiddleware) =>
             getDefaultMiddleware()
                 .concat(trackApi.middleware)
                 .concat(artistApi.middleware)
-                .concat(albumApi.middleware),
+                .concat(albumApi.middleware)
+                .concat(authApi.middleware),
         devTools: true,
     });
 

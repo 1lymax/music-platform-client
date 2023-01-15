@@ -1,7 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {ArtistState} from "../../types/artist";
 import {APP_HYDRATE} from "../index";
-import {artistApi} from "../api/artist";
+import {artistApi} from "../api/artist.api";
 
 
 const initialState: ArtistState = {

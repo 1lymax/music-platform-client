@@ -1,6 +1,5 @@
 import {IAlbum} from "../../types/album";
 import {HYDRATE} from "next-redux-wrapper";
-import {setAlbums} from "../slices/albumSlice";
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 
 export const albumApi = createApi({
@@ -27,15 +26,16 @@ export const albumApi = createApi({
                 url: `album/search/artist`,
                 params: arg
             }),
-            onCacheEntryAdded(arg, {dispatch, cacheDataLoaded} ): Promise<void> | void {
-                try {
-                    cacheDataLoaded.then(result => {
-                        dispatch(setAlbums(result.data))})
-                }catch (e) {
-                    console.log(e)
-                }
-
-            }
+            // onCacheEntryAdded(arg, {dispatch, cacheDataLoaded} ): Promise<void> | void {
+            //     try {
+            //         console.log('onCacheEntryAdded')
+            //         cacheDataLoaded.then(result => {
+            //             dispatch(setAlbums(result.data))})
+            //     }catch (e) {
+            //         console.log(e)
+            //     }
+            //
+            // }
         }),
         createAlbum: builder.mutation<IAlbum, FormData>({
             query: (args) => ({

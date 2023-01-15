@@ -1,6 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {AlbumState} from "../../types/album";
 import {APP_HYDRATE} from "../index";
+import {albumApi} from "../api/album.api";
 
 
 const initialState: AlbumState = {
@@ -25,6 +26,9 @@ export const albumSlice = createSlice({
                         ...action.payload.album,
                     };
                 })
+            .addMatcher(albumApi.endpoints.searchAlbum.matchFulfilled, (state, action) => {
+                state.albums = action.payload
+            })
     },
 })
 

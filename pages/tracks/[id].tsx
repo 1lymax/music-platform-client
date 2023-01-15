@@ -6,7 +6,7 @@ import {Button, TextField} from "@mui/material";
 import {wrapper} from "../../store";
 import {ITrack} from "../../types/track";
 import MainLayout from "../../layouts/MainLayout";
-import {getTrackById} from "../../store/api/track";
+import {getTrackById} from "../../store/api/track.api";
 
 interface PageProps {
     track: ITrack;
