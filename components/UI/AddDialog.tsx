@@ -21,20 +21,24 @@ interface AddDialogProps {
 const AddDialog: FC<AddDialogProps> = ({open, setOpen, title, children}) => {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const childRef = useRef()
+    const childRef = useRef<any>()
 
-    const clones = Children
-        .toArray(children)
-            .map((child, index) => {
-            let props = {}
-            if (index === 0) {
-                props = {
-                    ref: childRef
-                }
-            }
-            // @ts-ignore
-            return React.cloneElement(child, props)
-        });
+
+    const clone = Children.only(children)
+    const child = React.cloneElement(clone as React.ReactElement<any>, {ref: childRef})
+
+    // const clones = Children
+    //     .toArray(children)
+    //         .map((child, index) => {
+    //         let props = {}
+    //         if (index === 0) {
+    //             props = {
+    //                 ref: childRef
+    //             }
+    //         }
+    //         // @ts-ignore
+    //         return React.cloneElement(child, props)
+    //     });
 
 
     const handleSubmit = () => {
@@ -61,7 +65,7 @@ const AddDialog: FC<AddDialogProps> = ({open, setOpen, title, children}) => {
                     {title}
                 </DialogTitle>
                 <DialogContent>
-                    {clones[0]}
+                    {child}
                 </DialogContent>
                 <DialogActions>
                     <Button autoFocus onClick={handleClose}>

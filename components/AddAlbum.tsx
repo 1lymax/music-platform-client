@@ -12,10 +12,10 @@ import {useInput} from "../hooks/useInput";
 import ImagePreview from "./UI/ImagePreview";
 import AddArtist from "./AddArtist";
 import {useErrorMessage} from "../hooks/useErrorMessage";
-import {useCreateAlbumMutation} from "../store/api/album";
+import {useCreateAlbumMutation} from "../store/api/album.api";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import {useSuccessMessage} from "../hooks/useSuccessMessage";
-import AddDialog from "./AddDialog";
+import AddDialog from "./UI/AddDialog";
 
 interface AddAlbumProps {
     setSuccess?: Dispatch<SetStateAction<boolean>>
@@ -35,7 +35,7 @@ const SelectContainer = styled.div`
   align-items: center;
   margin-bottom: 15px;
 `
-
+/* eslint-disable react/display-name */
 const AddAlbum: FC<AddAlbumProps> = forwardRef((props, ref) => {
     const name = useInput('')
     const [picture, setPicture] = useState<any>();
@@ -52,7 +52,7 @@ const AddAlbum: FC<AddAlbumProps> = forwardRef((props, ref) => {
 
     useEffect(() => {
         if (isSuccess) {
-            name.value = ''
+            name.setValue('')
             setPicture(null)
             props.setSuccess && props.setSuccess(true)
         }
@@ -61,7 +61,7 @@ const AddAlbum: FC<AddAlbumProps> = forwardRef((props, ref) => {
     useImperativeHandle(ref, () => ({
         save: () => {
             const form = new FormData()
-            form.append("name", name.value)
+            form.append("name", name.componentProps.value)
             form.append("picture", picture)
             if (artist?._id) form.append("artistId", artist._id)
             createAlbum(form)
@@ -73,7 +73,7 @@ const AddAlbum: FC<AddAlbumProps> = forwardRef((props, ref) => {
         <div>
             <Step>
                 <TextField
-                    {...name}
+                    {...name.componentProps}
                     label={"Album name"}
                     sx={{margin: '15px 0'}}
                 />

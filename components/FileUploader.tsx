@@ -27,7 +27,7 @@ const DragContainer = styled.div`
   top: 0;
   left: 0;
   z-index: 3;
-  width: 100%;
+  width: 50%;
   height: 100%;
 `
 
@@ -72,7 +72,7 @@ const FileUploader: FC<FileUploaderProps> = ({setFile, children, accept}) => {
                        onDragLeave={() => setDragEnter(false)}
                        onClick={() => ref.current?.click()}>
                 <input ref={ref} hidden type="file" accept={accept} onChange={uploadButtonHandler}/>
-                <Title>Drag'n'Drop here or browse...</Title>
+                <Title>Drag&apos;n&apos;Drop here or browse...</Title>
 
             </Container>
             <ChildrenContainer>

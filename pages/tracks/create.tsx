@@ -9,19 +9,19 @@ import {useInput} from "../../hooks/useInput";
 import {Button, TextField} from "@mui/material";
 import AddAlbum from "../../components/AddAlbum";
 import MainLayout from "../../layouts/MainLayout";
-import AddDialog from "../../components/AddDialog";
+import AddDialog from "../../components/UI/AddDialog";
 import AddArtist from "../../components/AddArtist";
 import AddButton from "../../components/UI/AddButton";
 import SelectBox from "../../components/UI/SelectBox";
 import StepWrapper from "../../components/StepWrapper";
 import FileUploader from "../../components/FileUploader";
-import {useSearchAlbumQuery} from "../../store/api/album";
+import {useSearchAlbumQuery} from "../../store/api/album.api";
 import {useErrorMessage} from "../../hooks/useErrorMessage";
 import ImagePreview from "../../components/UI/ImagePreview";
 import AudioPreview from "../../components/UI/AudioPreview";
-import {useGetAllArtistsQuery} from "../../store/api/artist";
+import {useGetAllArtistsQuery} from "../../store/api/artist.api";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {useCreateTrackMutation} from "../../store/api/track";
+import {useCreateTrackMutation} from "../../store/api/track.api";
 import {useSuccessMessage} from "../../hooks/useSuccessMessage";
 
 
@@ -52,11 +52,11 @@ const Create: FC = () => {
     const [audio, setAudio] = useState<any>();
     const [picture, setPicture] = useState<any>();
     const [activeStep, setActiveStep] = useState<number>(0);
-    const [artistDialog, setArtistDialog] = useState(false);
-    const [albumDialog, setAlbumDialog] = useState(false);
+    const [artistDialog, setArtistDialog] = useState<boolean>(false);
+    const [albumDialog, setAlbumDialog] = useState<boolean>(false);
 
-    const name = useInput('')
-    const text = useInput('')
+    const name = useInput('', 'Track title')
+    const text = useInput('', 'Track lyrics')
 
     const {artists} = useTypedSelector(state => state.artist)
     const {albums} = useTypedSelector(state => state.album)
@@ -72,9 +72,8 @@ const Create: FC = () => {
     useEffect(() => {
         if (isSuccess)
             router.push('/tracks')
+        //@ts-ignore
     }, [isSuccess]);
-
-
 
     const back = () => {
         setActiveStep(prevState => prevState - 1)
@@ -85,8 +84,8 @@ const Create: FC = () => {
             setActiveStep(prevState => prevState + 1)
         } else {
             const form = new FormData()
-            form.append("name", name.value)
-            form.append("text", text.value)
+            form.append("name", name.componentProps.value)
+            form.append("text", text.componentProps.value)
             form.append("picture", picture)
             form.append("audio", audio)
             if (album?._id) form.append("albumId", album._id)
@@ -108,8 +107,7 @@ const Create: FC = () => {
                 {activeStep === 0 &&
 					<Step>
 						<TextField
-                            {...name}
-							label={"Track title"}
+                            {...name.componentProps}
 							sx={{marginBottom: '15px'}}
 						/>
 						<SelectContainer>
@@ -123,10 +121,9 @@ const Create: FC = () => {
                                        onClick={() => setAlbumDialog(true)}>Add...</AddButton>
 						</SelectContainer>
                         <TextField
-                            {...text}
+                            {...text.componentProps}
 							rows={4}
 							multiline
-							label={"Track lyrics"}
 							sx={{marginBottom: '10px'}}
 						/>
                     </Step>
@@ -163,8 +160,6 @@ const Create: FC = () => {
             <AddDialog open={albumDialog} setOpen={setAlbumDialog} title={'Add new album'}>
                 <AddAlbum setSuccess={setAlbumDialog}/>
             </AddDialog>
-            {/*<AddArtistDialog open={artistDialog} setOpen={setArtistDialog}/>*/}
-            {/*<AddAlbumDialog open={albumDialog} setOpen={setAlbumDialog}/>*/}
         </MainLayout>
     );
 };

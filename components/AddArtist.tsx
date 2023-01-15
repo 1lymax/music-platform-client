@@ -7,7 +7,7 @@ import FileUploader from "./FileUploader";
 import {useInput} from "../hooks/useInput";
 import ImagePreview from "./UI/ImagePreview";
 import {useErrorMessage} from "../hooks/useErrorMessage";
-import {useCreateArtistMutation} from "../store/api/artist";
+import {useCreateArtistMutation} from "../store/api/artist.api";
 import {useSuccessMessage} from "../hooks/useSuccessMessage";
 
 interface AddArtistProps {
@@ -22,7 +22,7 @@ const Step = styled.div`
   height: 100%;
   width: 500px;
 `
-
+/* eslint-disable react/display-name */
 const AddArtist: FC<AddArtistProps> = forwardRef((props , ref) => {
     const name = useInput('')
     const [picture, setPicture] = useState<any>();
@@ -35,7 +35,7 @@ const AddArtist: FC<AddArtistProps> = forwardRef((props , ref) => {
 
     useEffect(() => {
         if (isSuccess) {
-            name.value = ''
+            name.setValue('')
             setPicture(null)
             props.setSuccess && props.setSuccess(true)
         }
@@ -44,31 +44,25 @@ const AddArtist: FC<AddArtistProps> = forwardRef((props , ref) => {
     useImperativeHandle(ref, () => ({
         save: () => {
             const form = new FormData()
-            form.append("name", name.value)
+            form.append("name", name.componentProps.value)
             form.append("picture", picture)
             createArtist(form)
         }
     }))
 
-
     return (
         <div>
             <Step>
                 <TextField
-                    {...name}
+                    {...name.componentProps}
                     label={"Artist name"}
                     sx={{margin: '15px 0'}}
                 />
-                {/*<SelectContainer>*/}
-                {/*    <SelectBox label={'Artist...'} setValue={setArtist} options={artists}/>*/}
-                {/*</SelectContainer>*/}
-
                 <FileUploader setFile={setPicture} accept="image/*">
                     {picture &&
 						<ImagePreview file={picture}/>
                     }
                 </FileUploader>
-
             </Step>
         </div>
     );
