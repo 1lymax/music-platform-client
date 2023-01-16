@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React, {useState} from 'react';
 import styled from "styled-components";
 import {AccountCircle} from "@mui/icons-material";
@@ -7,7 +6,10 @@ import {Avatar, Box, Menu, MenuItem, Tooltip} from '@mui/material';
 import Login from "../Login";
 import AppDialog from "./AppDialog";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {initialState, setUser} from "../../store/slices/userSlice";
+import {initialState} from "../../store/slices/userSlice";
+import Cookies from "js-cookie";
+import {useRouter} from "next/router";
+import {useUserActions} from "../../hooks/actions/useUserActions";
 
 
 const Container = styled.div``
@@ -23,6 +25,8 @@ const Item = styled.div`
 const AccountMenu = () => {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const [login, setLogin] = useState(false);
+    const router = useRouter()
+    const {setUser} = useUserActions()
 
 
     const { user } = useTypedSelector(state => state.user)
@@ -36,19 +40,29 @@ const AccountMenu = () => {
     };
 
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
+    const handleCloseUserMenu = async (link: string) => {
+        if (link === '/logout') {
+            handleLogout()
+            setAnchorElUser(null);
+            await router.push('/')
+        } else {
+            setAnchorElUser(null);
+            await router.push(link)
+        }
     };
 
     const handleLogout = () => {
+        Cookies.remove('access_token')
         setUser(initialState)
+
     }
 
     const settings = [
         { title: 'Profile', link: '/profile' },
         { title: 'Account', link: '/account' },
         { title: 'Dashboard', link: '/dashboard' },
-        { title: 'Logout', link: '/logout' }];
+        { title: 'Logout', link: '/logout' }
+    ];
 
     return (
         <Container>
@@ -57,8 +71,7 @@ const AccountMenu = () => {
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                         {user._id
                             ? <Avatar alt={user.name}
-                                      src={user.picture ? `${process.env.NEXT_PUBLIC_API_URL}${user.picture}` : ''}
-                            />
+                                      src={user.picture ? `${process.env.NEXT_PUBLIC_API_URL}${user.picture}` : ''}/>
                             : <AccountCircle fontSize={"large"} sx={{ color: "white" }}/>
                         }
 
@@ -81,10 +94,8 @@ const AccountMenu = () => {
                     onClose={handleCloseUserMenu}
                 >
                     {settings.map((setting) => (
-                        <MenuItem key={setting.title} onClick={handleCloseUserMenu}>
-                            <Item>
-                                <Link href={setting.link}>{setting.title}</Link>
-                            </Item>
+                        <MenuItem key={setting.title} onClick={() => handleCloseUserMenu(setting.link)}>
+                            <Item>{setting.title}</Item>
                         </MenuItem>
                     ))}
                 </Menu>
