@@ -44,7 +44,7 @@ const AccountMenu = () => {
         if (link === '/logout') {
             handleLogout()
             setAnchorElUser(null);
-            await router.push('/')
+            //await router.push('/')
         } else {
             setAnchorElUser(null);
             await router.push(link)

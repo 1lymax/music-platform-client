@@ -4,7 +4,8 @@ import React, {Dispatch, FC, forwardRef, SetStateAction, useEffect, useImperativ
 import {useInput} from "../hooks/useInput";
 import {useErrorMessage} from "../hooks/useErrorMessage";
 import {useSuccessMessage} from "../hooks/useSuccessMessage";
-import {useGoogleOauthMutation, useLoginMutation} from "../store/api/auth.api";
+import {useLoginMutation} from "../store/api/auth.api";
+import LoadingContainer from "./UI/LoadingContainer";
 
 interface LoginProps {
     setOpen?: Dispatch<SetStateAction<boolean>>
@@ -13,13 +14,8 @@ interface LoginProps {
 const Container = styled.div`
   width: 400px;
   display: flex;
-
+  position: relative;
   flex-direction: column;
-`
-
-const InputContainer = styled.div`
-  width: 100%;
-  margin: 10px;
 `
 
 const SocialContainer = styled.div`
@@ -33,7 +29,7 @@ const Login: FC<LoginProps> = forwardRef((props, ref) => {
     const password = useInput('', 'Password')
 
     const [login, { isSuccess: isSuccessLogin, isLoading: isLoadingLogin, error: errorLogin }] = useLoginMutation()
-    const [google, { isSuccess: isSuccessG, isLoading: isLoadingG, isError: isErrorG }] = useGoogleOauthMutation()
+    //const [google, { isSuccess: isSuccessG, isLoading: isLoadingG, isError: isErrorG }] = useGoogleOauthMutation()
 
     useEffect(() => {
         if (isSuccessLogin) {
@@ -59,6 +55,7 @@ const Login: FC<LoginProps> = forwardRef((props, ref) => {
 
     return (
             <Container>
+                {isLoadingLogin && <LoadingContainer/> }
                 <TextField
                     margin={"normal"}
                     {...email.componentProps}
