@@ -5,7 +5,7 @@ import {authApi} from "../api/auth.api";
 import jwtDecode from "jwt-decode";
 
 
-const initialState: UserState = {
+export const initialState: UserState = {
     user: {
         _id: '',
         name: '',

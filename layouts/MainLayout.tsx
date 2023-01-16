@@ -16,12 +16,10 @@ const Container = styled.div`
 
 const MainLayout: React.FC<{ children: any }> = ({ children }) => {
     const token = Cookies.get('access_token')
-    console.log('token', token)
     const { setUser } = useUserActions()
 
     useEffect(() => {
         if (token) {
-            console.log('useEffect', jwtDecode(token))
             setUser({ ...jwtDecode<IUser>(token) })
         }
     }, [token]);
