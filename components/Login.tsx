@@ -1,8 +1,7 @@
-import React, {Dispatch, FC, forwardRef, SetStateAction, useEffect, useImperativeHandle} from 'react';
 import styled from "styled-components";
+import {Button, Chip, Divider, TextField} from "@mui/material";
+import React, {Dispatch, FC, forwardRef, SetStateAction, useEffect, useImperativeHandle} from 'react';
 import {useInput} from "../hooks/useInput";
-import MainLayout from "../layouts/MainLayout";
-import {Button, TextField} from "@mui/material";
 import {useErrorMessage} from "../hooks/useErrorMessage";
 import {useSuccessMessage} from "../hooks/useSuccessMessage";
 import {useGoogleOauthMutation, useLoginMutation} from "../store/api/auth.api";
@@ -11,7 +10,22 @@ interface LoginProps {
     setOpen?: Dispatch<SetStateAction<boolean>>
 }
 
-const Container = styled.div``
+const Container = styled.div`
+  width: 400px;
+  display: flex;
+
+  flex-direction: column;
+`
+
+const InputContainer = styled.div`
+  width: 100%;
+  margin: 10px;
+`
+
+const SocialContainer = styled.div`
+  width: 100%;
+  margin-top: 20px;
+`
 
 const Login: FC<LoginProps> = forwardRef((props, ref) => {
 
@@ -44,21 +58,28 @@ const Login: FC<LoginProps> = forwardRef((props, ref) => {
     useErrorMessage('Login error. Bad credentials!', errorLogin)
 
     return (
-        <MainLayout>
             <Container>
                 <TextField
+                    margin={"normal"}
                     {...email.componentProps}
                 />
+
                 <TextField
+                    margin={"normal"}
                     {...password.componentProps}
                     type={'password'}
                 />
-                <Button
-                    href={`${process.env.NEXT_PUBLIC_API_URL}auth/google?back=${process.env.NEXT_PUBLIC_SITE_URL}`}>
-                    Google
-                </Button>
+                <Divider sx={{marginTop: '50px'}}>
+                    <Chip label="or use social networks" />
+                </Divider>
+                <SocialContainer>
+                    <Button
+                        href={`${process.env.NEXT_PUBLIC_API_URL}auth/google?back=${process.env.NEXT_PUBLIC_SITE_URL}`}>
+                        Google
+                    </Button>
+                </SocialContainer>
+
             </Container>
-        </MainLayout>
     );
 });
 

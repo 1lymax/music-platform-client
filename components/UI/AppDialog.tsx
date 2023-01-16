@@ -41,7 +41,6 @@ const AppDialog: FC<AddDialogProps> = ({open, setOpen, title, buttonTitle='Save'
     };
 
     return (
-        <div>
             <Dialog
                 sx={{'& .MuiDialog-paper': {height: 550}}}
                 fullScreen={fullScreen}
@@ -52,11 +51,11 @@ const AppDialog: FC<AddDialogProps> = ({open, setOpen, title, buttonTitle='Save'
                 <DialogTitle>
                     {title}
                 </DialogTitle>
-                <Divider/>
+                <Divider variant={"middle"}/>
                 <DialogContent>
                     {child}
                 </DialogContent>
-                <Divider/>
+                <Divider variant={"middle"}/>
                 <DialogActions>
                     <Button autoFocus onClick={handleClose}>
                         Cancel
@@ -66,7 +65,6 @@ const AppDialog: FC<AddDialogProps> = ({open, setOpen, title, buttonTitle='Save'
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
     );
 }
 
