@@ -11,7 +11,7 @@ import {useCreateArtistMutation} from "../store/api/artist.api";
 import {useSuccessMessage} from "../hooks/useSuccessMessage";
 
 interface AddArtistProps {
-    setSuccess?: Dispatch<SetStateAction<boolean>>
+    setOpen?: Dispatch<SetStateAction<boolean>>
 }
 
 
@@ -37,7 +37,7 @@ const AddArtist: FC<AddArtistProps> = forwardRef((props , ref) => {
         if (isSuccess) {
             name.setValue('')
             setPicture(null)
-            props.setSuccess && props.setSuccess(true)
+            props.setOpen && props.setOpen(false)
         }
     }, [isSuccess]);
 

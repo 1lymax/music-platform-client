@@ -7,6 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import {Divider} from "@mui/material";
 
 
 
@@ -14,11 +15,12 @@ interface AddDialogProps {
     open: boolean;
     setOpen: (open: boolean) => void;
     title: string;
+    buttonTitle?: string;
     children: React.ReactNode
 }
 
 
-const AddDialog: FC<AddDialogProps> = ({open, setOpen, title, children}) => {
+const AppDialog: FC<AddDialogProps> = ({open, setOpen, title, buttonTitle='Save', children}) => {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const childRef = useRef<any>()
@@ -27,24 +29,10 @@ const AddDialog: FC<AddDialogProps> = ({open, setOpen, title, children}) => {
     const clone = Children.only(children)
     const child = React.cloneElement(clone as React.ReactElement<any>, {ref: childRef})
 
-    // const clones = Children
-    //     .toArray(children)
-    //         .map((child, index) => {
-    //         let props = {}
-    //         if (index === 0) {
-    //             props = {
-    //                 ref: childRef
-    //             }
-    //         }
-    //         // @ts-ignore
-    //         return React.cloneElement(child, props)
-    //     });
-
-
     const handleSubmit = () => {
         // @ts-ignore
         childRef.current.save()
-        setOpen(false);
+        //setOpen(false);
 
     }
 
@@ -64,15 +52,17 @@ const AddDialog: FC<AddDialogProps> = ({open, setOpen, title, children}) => {
                 <DialogTitle>
                     {title}
                 </DialogTitle>
+                <Divider/>
                 <DialogContent>
                     {child}
                 </DialogContent>
+                <Divider/>
                 <DialogActions>
                     <Button autoFocus onClick={handleClose}>
                         Cancel
                     </Button>
                     <Button onClick={() => handleSubmit()} autoFocus>
-                        Save
+                        {buttonTitle}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -80,4 +70,4 @@ const AddDialog: FC<AddDialogProps> = ({open, setOpen, title, children}) => {
     );
 }
 
-export default AddDialog
+export default AppDialog

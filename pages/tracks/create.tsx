@@ -9,7 +9,7 @@ import {useInput} from "../../hooks/useInput";
 import {Button, TextField} from "@mui/material";
 import AddAlbum from "../../components/AddAlbum";
 import MainLayout from "../../layouts/MainLayout";
-import AddDialog from "../../components/UI/AddDialog";
+import AppDialog from "../../components/UI/AppDialog";
 import AddArtist from "../../components/AddArtist";
 import AddButton from "../../components/UI/AddButton";
 import SelectBox from "../../components/UI/SelectBox";
@@ -154,12 +154,12 @@ const Create: FC = () => {
                 <Button variant={"contained"} disabled={activeStep === 0} onClick={back}>Back</Button>
                 <Button variant={"contained"} onClick={next}>{activeStep === 2 ? 'Save' : 'Next'}</Button>
             </ButtonContainer>
-            <AddDialog open={artistDialog} setOpen={setArtistDialog} title={'Add new artist'}>
-                <AddArtist setSuccess={setArtistDialog}/>
-            </AddDialog>
-            <AddDialog open={albumDialog} setOpen={setAlbumDialog} title={'Add new album'}>
-                <AddAlbum setSuccess={setAlbumDialog}/>
-            </AddDialog>
+            <AppDialog open={artistDialog} setOpen={setArtistDialog} title={'Add new artist'}>
+                <AddArtist setOpen={setArtistDialog}/>
+            </AppDialog>
+            <AppDialog open={albumDialog} setOpen={setAlbumDialog} title={'Add new album'}>
+                <AddAlbum setOpen={setAlbumDialog}/>
+            </AppDialog>
         </MainLayout>
     );
 };

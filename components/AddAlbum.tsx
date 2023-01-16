@@ -15,10 +15,10 @@ import {useErrorMessage} from "../hooks/useErrorMessage";
 import {useCreateAlbumMutation} from "../store/api/album.api";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import {useSuccessMessage} from "../hooks/useSuccessMessage";
-import AddDialog from "./UI/AddDialog";
+import AppDialog from "./UI/AppDialog";
 
 interface AddAlbumProps {
-    setSuccess?: Dispatch<SetStateAction<boolean>>
+    setOpen?: Dispatch<SetStateAction<boolean>>
 
 }
 
@@ -54,7 +54,7 @@ const AddAlbum: FC<AddAlbumProps> = forwardRef((props, ref) => {
         if (isSuccess) {
             name.setValue('')
             setPicture(null)
-            props.setSuccess && props.setSuccess(true)
+            props.setOpen && props.setOpen(false)
         }
     }, [isSuccess]);
 
@@ -89,9 +89,9 @@ const AddAlbum: FC<AddAlbumProps> = forwardRef((props, ref) => {
                 </FileUploader>
 
             </Step>
-            <AddDialog open={artistDialog} setOpen={setArtistDialog} title={'Add new artist'}>
-                <AddArtist setSuccess={setArtistDialog}/>
-            </AddDialog>
+            <AppDialog open={artistDialog} setOpen={setArtistDialog} title={'Add new artist'}>
+                <AddArtist setOpen={setArtistDialog}/>
+            </AppDialog>
         </div>
     );
 })
