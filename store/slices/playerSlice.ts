@@ -1,13 +1,13 @@
 import {PlayerState} from "../../types/player";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {HYDRATE} from "next-redux-wrapper";
 
 const initialState: PlayerState = {
     active: null,
     currentTime: 0,
     duration: 0,
     pause: true,
-    volume: 30
+    volume: 30,
+    playlist: []
 }
 
 export const playerSlice = createSlice({
@@ -33,16 +33,22 @@ export const playerSlice = createSlice({
         setVolume: (state, action:PayloadAction<PlayerState["volume"]>) => {
             state.volume = action.payload
         },
+        setPlayList: (state, action:PayloadAction<PlayerState["playlist"]>) => {
+            state.playlist = action.payload
+        },
+        addToPlayList: (state, action:PayloadAction<PlayerState["playlist"]>) => {
+            state.playlist = [ ...state.playlist, ...action.payload ]
+        },
 
     },
-    extraReducers: {
-        [HYDRATE]: (state, action) => {
-            return {
-                ...state,
-                ...action.payload.player,
-            };
-        },
-    },
+    // extraReducers: {
+    //     [HYDRATE]: (state, action) => {
+    //         return {
+    //             ...state,
+    //             ...action.payload.player,
+    //         };
+    //     },
+    // },
 })
 
 export const playerActionCreators = playerSlice.actions

@@ -62,15 +62,16 @@ let audio: HTMLAudioElement
 
 const Player: FC<PlayerProps> = () => {
 
-    const {pause, duration, volume, active, currentTime} = useTypedSelector(state => state.player)
-    const {pauseTrack, playTrack, setVolume, setDuration, setCurrentTime} = usePlayerActions()
+    const { pause, duration, volume, active, currentTime } = useTypedSelector(state => state.player)
+    const { pauseTrack, playTrack, setVolume, setDuration, setCurrentTime } = usePlayerActions()
 
     useEffect(() => {
         if (!audio) {
             audio = new Audio()
-        }else{
+            console.log(audio)
+        } else {
             setAudio()
-            play()
+            //play()
         }
     }, [active]);
 
@@ -81,6 +82,7 @@ const Player: FC<PlayerProps> = () => {
             audio.onloadedmetadata = () => {
                 setDuration(Math.ceil(audio.duration))
             }
+            audio.currentTime = currentTime
             audio.ontimeupdate = () => {
                 setCurrentTime(Math.ceil(audio.currentTime))
             }
@@ -89,16 +91,20 @@ const Player: FC<PlayerProps> = () => {
 
     useEffect(() => {
         if (pause) {
+            console.log('pause')
             audio.pause()
         } else {
+            console.log('play')
             audio.play()
         }
     }, [pause]);
 
     const play = async () => {
         if (pause) {
+            console.log('playTrack')
             playTrack()
         } else {
+            console.log('pauseTrack')
             pauseTrack()
         }
     }
@@ -110,6 +116,7 @@ const Player: FC<PlayerProps> = () => {
 
     const changeCurrentTime = (e: ChangeEvent<HTMLInputElement>) => {
         audio.currentTime = (Number(e.target.value))
+        console.log('changeCurrentTime', Number(e.target.value))
         setCurrentTime(Number(e.target.value))
     }
 
