@@ -16,7 +16,7 @@ export const artistSlice = createSlice({
             state.artists = action.payload
         },
     },
-    extraReducers: builder => {
+    extraReducers (builder)  {
         builder
             .addCase(
                 APP_HYDRATE, (state, action) => {
