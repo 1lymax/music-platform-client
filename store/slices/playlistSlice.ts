@@ -36,7 +36,7 @@ export const playlistSlice = createSlice({
 
         changeTrack: (state) => {
             if (state.playMode === playModes.all) {
-                if (state.currentTrack === state.playlist.length) {
+                if (state.currentTrack + 1 === state.playlist.length) {
                     state.currentTrack = 0
                 }else{
                     state.currentTrack = state.currentTrack + 1

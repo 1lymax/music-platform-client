@@ -100,6 +100,7 @@ const Player: FC<PlayerProps> = () => {
                 if (playlistActive && audio.ended) {
                     changeTrack()
                     if (playMode === playModes.single)
+                        audio.currentTime = 0
                         audio.play()
                 }
             }

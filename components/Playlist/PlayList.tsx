@@ -33,7 +33,7 @@ const TitleButtons = styled.div`
 const PlayList: FC<PlayListProps> = () => {
     const [show, setShow] = useState(false);
     const { setActive, playTrack } = usePlayerActions()
-    const { setActive: setPlaylistActive, changePlayMode } = usePlaylistActions()
+    const { setActive: setPlaylistActive, changePlayMode,setCurrentTrack } = usePlaylistActions()
 
     const { playlist, currentTrack, playlistActive, playMode } = useTypedSelector(state => state.playlist)
     const { pause } = useTypedSelector(state => state.player)
@@ -45,7 +45,9 @@ const PlayList: FC<PlayListProps> = () => {
     const play = () => {
         if (!playlistActive) {
             setPlaylistActive(true)
+            setCurrentTrack(0)
             setActive(playlist[0])
+            playTrack()
         } else {
             if (pause) playTrack()
         }
@@ -93,7 +95,7 @@ const PlayList: FC<PlayListProps> = () => {
                 }
                 Playlist ({currentTrack + 1}/{playlist.length})
                 <TitleButtons>
-                    <PlaylistPlay color="action" onClick={play}/>
+                    <PlaylistPlay color="action" onClick={() => play()}/>
                     {playMode === playModes.all && <Repeat color="action" onClick={() => changePlayMode(playModes.shuffle)}/>}
                     {playMode === playModes.shuffle && <Shuffle color="action" onClick={() => changePlayMode(playModes.single)}/>}
                     {playMode === playModes.single && <RepeatOne color="action" onClick={() => changePlayMode(playModes.all)}/>}
