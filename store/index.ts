@@ -9,6 +9,7 @@ import {artistSlice} from "./slices/artistSlice";
 import {albumSlice} from "./slices/albumSlice";
 import {authApi} from "./api/auth.api";
 import {userSlice} from "./slices/userSlice";
+import {playlistSlice} from "./slices/playlistSlice";
 
 const makeStore = () =>
     configureStore({
@@ -18,6 +19,7 @@ const makeStore = () =>
             [artistSlice.name]: artistSlice.reducer,
             [albumSlice.name]: albumSlice.reducer,
             [userSlice.name]: userSlice.reducer,
+            [playlistSlice.name]: playlistSlice.reducer,
 
             [trackApi.reducerPath]: trackApi.reducer,
             [artistApi.reducerPath]: artistApi.reducer,

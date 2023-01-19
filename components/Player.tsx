@@ -5,6 +5,8 @@ import styled from "styled-components";
 import ProgressBar from "./UI/ProgressBar";
 import {usePlayerActions} from "../hooks/actions/usePlayerActions";
 import {useTypedSelector} from "../hooks/useTypedSelector";
+import {usePlaylistActions} from "../hooks/actions/usePlaylistActions";
+import {playModes} from "../types/playlist";
 
 
 interface PlayerProps {
@@ -63,15 +65,15 @@ let audio: HTMLAudioElement
 const Player: FC<PlayerProps> = () => {
 
     const { pause, duration, volume, active, currentTime } = useTypedSelector(state => state.player)
-    const { pauseTrack, playTrack, setVolume, setDuration, setCurrentTime } = usePlayerActions()
+    const { currentTrack, playlist, playMode, playlistActive } = useTypedSelector(state => state.playlist)
+    const { playPause, setVolume, setDuration, setCurrentTime, setActive } = usePlayerActions()
+    const { setCurrentTrack } = usePlaylistActions()
 
     useEffect(() => {
         if (!audio) {
             audio = new Audio()
-            console.log(audio)
         } else {
             setAudio()
-            //play()
         }
     }, [active]);
 
@@ -85,29 +87,22 @@ const Player: FC<PlayerProps> = () => {
             audio.currentTime = currentTime
             audio.ontimeupdate = () => {
                 setCurrentTime(Math.ceil(audio.currentTime))
+                if (playlistActive && audio.ended) {
+                    changeTrack()
+                }
             }
         }
     }
 
     useEffect(() => {
         if (pause) {
-            console.log('pause')
             audio.pause()
         } else {
-            console.log('play')
-            audio.play()
+            audio.play().then(() => {
+            })
         }
-    }, [pause]);
+    }, [pause, active]);
 
-    const play = async () => {
-        if (pause) {
-            console.log('playTrack')
-            playTrack()
-        } else {
-            console.log('pauseTrack')
-            pauseTrack()
-        }
-    }
 
     const changeVolume = (e: ChangeEvent<HTMLInputElement>) => {
         audio.volume = Number(e.target.value) / 100
@@ -116,15 +111,26 @@ const Player: FC<PlayerProps> = () => {
 
     const changeCurrentTime = (e: ChangeEvent<HTMLInputElement>) => {
         audio.currentTime = (Number(e.target.value))
-        console.log('changeCurrentTime', Number(e.target.value))
         setCurrentTime(Number(e.target.value))
+    }
+
+    const changeTrack = () => {
+        if (playMode === playModes.all) {
+            if (currentTrack === playlist.length) {
+                setActive(playlist[0])
+                setCurrentTrack(0)
+            }else{
+                setActive(playlist[currentTrack + 1])
+                setCurrentTrack(currentTrack + 1)
+            }
+        }
     }
 
     if (!active) return null
 
     return (
         <Container>
-            <IconButton onClick={play}>
+            <IconButton onClick={() => playPause()}>
                 {pause
                     ? <PlayArrow/>
                     : <Pause/>

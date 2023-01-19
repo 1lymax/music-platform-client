@@ -7,7 +7,7 @@ import {wrapper} from "../../store";
 import {ITrack} from "../../types/track";
 import MainLayout from "../../layouts/MainLayout";
 import TrackList from "../../components/TrackList";
-import {getAllTracks, trackApi} from "../../store/api/track.api";
+import {getAllTracks} from "../../store/api/track.api";
 import FilterTracks from "../../components/FilterTracks";
 import {getAllArtists} from "../../store/api/artist.api";
 
@@ -69,7 +69,7 @@ export default Index;
 export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
     const tracks = await store.dispatch(getAllTracks.initiate())
     const artists = await store.dispatch(getAllArtists.initiate())
-    await Promise.all(store.dispatch(trackApi.util.getRunningQueriesThunk()))
+    //await Promise.all(store.dispatch(trackApi.util.getRunningQueriesThunk()))
     return {
         props: {
             tracks: tracks.data,

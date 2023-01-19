@@ -2,11 +2,12 @@ import React, {FC} from 'react';
 import styled from "styled-components";
 import {ITrack} from "../types/track";
 import IconButton from "@mui/material/IconButton";
-import {Delete, Pause, PlayArrow} from '@mui/icons-material';
+import {AddCircleOutlined, Delete, Pause, PlayArrow} from '@mui/icons-material';
 import {useRouter} from "next/router";
 import {usePlayerActions} from "../hooks/actions/usePlayerActions";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import convertHMS from "../utils/convertHMS";
+import {usePlaylistActions} from "../hooks/actions/usePlaylistActions";
 
 interface TrackItemProps {
     track: ITrack;
@@ -43,23 +44,27 @@ const Artist = styled.div`
 
 const TrackItem: FC<TrackItemProps> = ({track }) => {
     const router = useRouter()
-    const {playTrack, pauseTrack, setActive} = usePlayerActions()
+    const {playPause, setActive} = usePlayerActions()
+    const {addTrack, setActive: setPlaylistActive} = usePlaylistActions()
     const {active, pause, duration, currentTime} = useTypedSelector(state => state.player)
 
 
     const play = (e:any) => {
         e.stopPropagation()
+        setPlaylistActive(false)
+        if (active && active?._id !== track._id)
+            playPause()
         setActive(track)
-        if (pause) {
-            playTrack()
-        }else {
-            pauseTrack()
-        }
+        playPause()
+    }
 
+    const addToPlaylist = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        addTrack(track)
     }
 
     return (
-        <Container onClick={() => router.push('/tracks/' + track._id)}>
+        <Container onClick={() => router.push('/tracks/' + track._id)} draggable>
             <IconButton onClick={play}>
                 {!pause && active?._id === track._id
                     ? <Pause/>
@@ -74,6 +79,9 @@ const TrackItem: FC<TrackItemProps> = ({track }) => {
             </TrackWrapper>
             {active?._id === track._id && <div>{convertHMS(currentTime)} / {convertHMS(duration)}</div>
             }
+            <IconButton style={{marginLeft: 'auto'}} onClick={(e) => addToPlaylist(e)}>
+                <AddCircleOutlined/>
+            </IconButton>
             <IconButton style={{marginLeft: 'auto'}}>
                 <Delete/>
             </IconButton>

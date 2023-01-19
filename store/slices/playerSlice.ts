@@ -1,19 +1,21 @@
 import {PlayerState} from "../../types/player";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
+
 const initialState: PlayerState = {
     active: null,
     currentTime: 0,
     duration: 0,
     pause: true,
     volume: 30,
-    playlist: []
 }
+
 
 export const playerSlice = createSlice({
     name: 'player',
     initialState,
     reducers: {
+
         playTrack: (state) => {
             state.pause = false
         },
@@ -33,14 +35,21 @@ export const playerSlice = createSlice({
         setVolume: (state, action:PayloadAction<PlayerState["volume"]>) => {
             state.volume = action.payload
         },
-        setPlayList: (state, action:PayloadAction<PlayerState["playlist"]>) => {
-            state.playlist = action.payload
+        playPause: (state) => {
+            state.pause = !state.pause
         },
-        addToPlayList: (state, action:PayloadAction<PlayerState["playlist"]>) => {
-            state.playlist = [ ...state.playlist, ...action.payload ]
-        },
-
     },
+
+    // extraReducers (builder) {
+    //     builder
+    //         .addCase(changeTrack)
+    // }
+
+    // extraReducers(builder) {
+    //     builder
+    //         .addCase(playlistSlice.reducer.)
+    // })
+
     // extraReducers: {
     //     [HYDRATE]: (state, action) => {
     //         return {

@@ -17,7 +17,7 @@ export const albumSlice = createSlice({
             state.albums = action.payload
         },
     },
-    extraReducers: builder => {
+    extraReducers (builder) {
         builder
             .addCase(
                 APP_HYDRATE, (state, action) => {
