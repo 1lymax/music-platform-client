@@ -8,7 +8,8 @@ export enum playModes {
 
 export interface PlaylistState {
     playlistActive: boolean;
-    playlist: ITrack[];
+    playlist: { track: ITrack, position: number }[];
     currentTrack: number;
     playMode: playModes
 }
+// extra 'position' in the playlist for correct play between same tracks in the playlist when useEffect hook

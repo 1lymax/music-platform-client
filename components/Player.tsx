@@ -7,6 +7,7 @@ import ProgressBar from "./UI/ProgressBar";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import {usePlayerActions} from "../hooks/actions/usePlayerActions";
 import {usePlaylistActions} from "../hooks/actions/usePlaylistActions";
+import {playModes} from "../types/playlist";
 
 
 interface PlayerProps {
@@ -63,7 +64,7 @@ let audio: HTMLAudioElement
 
 const Player: FC<PlayerProps> = () => {
 
-    const { playlistActive } = useTypedSelector(state => state.playlist)
+    const { playlistActive, playMode } = useTypedSelector(state => state.playlist)
     const { pause, duration, volume, active, currentTime } = useTypedSelector(state => state.player)
 
     const { changeTrack } = usePlaylistActions()
@@ -88,7 +89,7 @@ const Player: FC<PlayerProps> = () => {
 
     const setAudio = () => {
         if (active) {
-            audio.src = process.env.NEXT_PUBLIC_API_URL + active.audio
+            audio.src = process.env.NEXT_PUBLIC_API_URL + active.track.audio
             audio.volume = volume / 100
             audio.onloadedmetadata = () => {
                 setDuration(Math.ceil(audio.duration))
@@ -98,6 +99,8 @@ const Player: FC<PlayerProps> = () => {
                 setCurrentTime(Math.ceil(audio.currentTime))
                 if (playlistActive && audio.ended) {
                     changeTrack()
+                    if (playMode === playModes.single)
+                        audio.play()
                 }
             }
         }
@@ -124,14 +127,14 @@ const Player: FC<PlayerProps> = () => {
                 }
             </IconButton>
             <InfoContainer>
-                <Image src={process.env.NEXT_PUBLIC_API_URL + active?.picture}/>
+                <Image src={process.env.NEXT_PUBLIC_API_URL + active.track.picture}/>
                 <Info>
                     <Title>
-                        {active?.name} - {active?.artistId?.name}
+                        {active.track.name} - {active.track.artistId?.name}
                     </Title>
-                    {active?.albumId?.name &&
+                    {active?.track.albumId?.name &&
 						<SubTitle>
-							({active?.albumId?.name})
+							({active?.track.albumId?.name})
 						</SubTitle>
                     }
                 </Info>

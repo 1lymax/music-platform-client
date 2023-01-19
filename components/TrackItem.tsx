@@ -52,9 +52,9 @@ const TrackItem: FC<TrackItemProps> = ({track }) => {
     const play = (e:any) => {
         e.stopPropagation()
         setPlaylistActive(false)
-        if (active && active?._id !== track._id)
+        if (active && active.track?._id !== track._id)
             playPause()
-        setActive(track)
+        setActive({ track, position: 0 })
         playPause()
     }
 
@@ -66,7 +66,7 @@ const TrackItem: FC<TrackItemProps> = ({track }) => {
     return (
         <Container onClick={() => router.push('/tracks/' + track._id)} draggable>
             <IconButton onClick={play}>
-                {!pause && active?._id === track._id
+                {!pause && active?.track?._id === track._id
                     ? <Pause/>
                     : <PlayArrow/>
                 }
@@ -77,7 +77,7 @@ const TrackItem: FC<TrackItemProps> = ({track }) => {
                 <Album>{track.albumId?.name}</Album>
                 <Artist>{track.artistId?.name}</Artist>
             </TrackWrapper>
-            {active?._id === track._id && <div>{convertHMS(currentTime)} / {convertHMS(duration)}</div>
+            {active?.track?._id === track._id && <div>{convertHMS(currentTime)} / {convertHMS(duration)}</div>
             }
             <IconButton style={{marginLeft: 'auto'}} onClick={(e) => addToPlaylist(e)}>
                 <AddCircleOutlined/>
