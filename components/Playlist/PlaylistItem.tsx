@@ -28,7 +28,7 @@ const PlaylistItem: FC<PlaylistItemProps> = ({track, index, active}) => {
         e.stopPropagation()
         setPlaylistActive(true)
         setCurrentTrack(index)
-        setActive(track)
+        setActive({ track, position: index })
         if (active) {
             playPause()
         } else {
@@ -54,7 +54,7 @@ const PlaylistItem: FC<PlaylistItemProps> = ({track, index, active}) => {
             <IconButton onClick={play}>
                 {playStatus()}
             </IconButton>
-            {track.name}
+            {track?.name}
         </Container>
     );
 };

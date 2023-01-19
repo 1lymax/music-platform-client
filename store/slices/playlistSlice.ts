@@ -7,7 +7,7 @@ const initialState: PlaylistState = {
     playlistActive: false,
     playlist: [],
     currentTrack: -1,
-    playMode: playModes.all
+    playMode: playModes.shuffle
 }
 
 
@@ -15,7 +15,7 @@ export const playlistSlice = createSlice({
     name: 'playlist',
     initialState,
     reducers: {
-        setPlayMode: (state, action:PayloadAction<PlaylistState["playMode"]>) => {
+        changePlayMode: (state, action:PayloadAction<playModes>) => {
             state.playMode = action.payload
         },
         setActive: (state, action:PayloadAction<boolean>) => {
@@ -28,11 +28,12 @@ export const playlistSlice = createSlice({
             state.currentTrack = action.payload
         },
         addTrack: (state, action:PayloadAction<ITrack>) => {
-            state.playlist.push(action.payload)
+            state.playlist.push({ track: action.payload, position: state.playlist.length })
         },
-        removeTrack: (state, action:PayloadAction<ITrack>) => {
-            state.playlist.push(action.payload)
-        },
+        // removeTrack: (state, action:PayloadAction<ITrack>) => {
+        //     state.playlist.push({ track: action.payload, position: 0 })
+        // },
+
         changeTrack: (state) => {
             if (state.playMode === playModes.all) {
                 if (state.currentTrack === state.playlist.length) {
@@ -40,6 +41,15 @@ export const playlistSlice = createSlice({
                 }else{
                     state.currentTrack = state.currentTrack + 1
                 }
+            }
+            if (state.playMode === playModes.shuffle) {
+                let random
+                do {
+                    random = Math.floor(Math.random() * state.playlist.length)
+                }while (random === state.currentTrack)
+                state.currentTrack = random
+            }
+            if (state.playMode === playModes.single) {
             }
         }
 

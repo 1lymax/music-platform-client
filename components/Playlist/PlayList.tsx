@@ -1,33 +1,64 @@
-import {Box, Collapse, Divider, LinearProgress, LinearProgressProps, Typography} from "@mui/material";
+import styled from "styled-components";
 import React, {FC, useEffect, useState} from 'react';
+import {PlaylistPlay, Repeat, RepeatOne, Shuffle} from "@mui/icons-material";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import {ITrack} from "../../types/track";
+import {Box, Collapse, Divider, LinearProgress, LinearProgressProps, Typography} from "@mui/material";
 import PlaylistItem from "./PlaylistItem";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {usePlayerActions} from "../../hooks/actions/usePlayerActions";
+import {usePlaylistActions} from "../../hooks/actions/usePlaylistActions";
+import {playModes} from "../../types/playlist";
 
 
 export interface PlayListProps {
-    playlist: ITrack[],
-    currentTrack: number
+
 }
 
+const Title = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
 
-const PlayList: FC <PlayListProps> = ({playlist, currentTrack}) => {
+
+const TitleButtons = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+
+const PlayList: FC<PlayListProps> = () => {
     const [show, setShow] = useState(false);
-    const { setActive } = usePlayerActions()
+    const { setActive, playTrack } = usePlayerActions()
+    const { setActive: setPlaylistActive, changePlayMode } = usePlaylistActions()
+
+    const { playlist, currentTrack, playlistActive, playMode } = useTypedSelector(state => state.playlist)
+    const { pause } = useTypedSelector(state => state.player)
 
     useEffect(() => {
         setActive(playlist[currentTrack])
     }, [currentTrack]);
 
+    const play = () => {
+        if (!playlistActive) {
+            setPlaylistActive(true)
+            setActive(playlist[0])
+        } else {
+            if (pause) playTrack()
+        }
+
+    }
+
     const LinearProgressWithLabel = (props: LinearProgressProps & { value: number }) => {
         return (
-            <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <Box sx={{width: '100%', mr: 1}}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ width: '100%', mr: 1 }}>
                     <LinearProgress variant="determinate" {...props} />
                 </Box>
-                <Box sx={{minWidth: 35}}>
+                <Box sx={{ minWidth: 35 }}>
                     <Typography variant="body2" color="text.secondary">{`${Math.round(
                         props.value,
                     )}%`}</Typography>
@@ -53,22 +84,22 @@ const PlayList: FC <PlayListProps> = ({playlist, currentTrack}) => {
             zIndex: 1
         }}
         >
-            <Box onClick={() => setShow(!show)}
-                 sx={{
-                     display: 'flex',
-                     cursor: 'pointer'
-                 }}>
+            <Title>
                 {show
                     ?
-                    <KeyboardArrowDownIcon color="action"/>
+                    <KeyboardArrowDownIcon color="action" onClick={() => setShow(!show)}/>
                     :
-                    <KeyboardArrowUpIcon color="action"/>
+                    <KeyboardArrowUpIcon color="action" onClick={() => setShow(!show)}/>
                 }
-                <Box sx={{mx: 1}}>
-                    Playlist ({currentTrack+1}/{playlist.length})
-                </Box>
-            </Box>
-            <Divider sx={{mb: 1, mt: 2}}/>
+                Playlist ({currentTrack + 1}/{playlist.length})
+                <TitleButtons>
+                    <PlaylistPlay color="action" onClick={play}/>
+                    {playMode === playModes.all && <Repeat color="action" onClick={() => changePlayMode(playModes.shuffle)}/>}
+                    {playMode === playModes.shuffle && <Shuffle color="action" onClick={() => changePlayMode(playModes.single)}/>}
+                    {playMode === playModes.single && <RepeatOne color="action" onClick={() => changePlayMode(playModes.all)}/>}
+                </TitleButtons>
+            </Title>
+            <Divider sx={{ mb: 1, mt: 2 }}/>
 
             <Collapse in={show}>
                 <Box
@@ -79,8 +110,9 @@ const PlayList: FC <PlayListProps> = ({playlist, currentTrack}) => {
                         overflowX: 'hidden',
                         width: '100%'
                     }}>
-                    {playlist.map((track, index) => (
-                        <PlaylistItem key={track._id+index} track={track} index={index} active={currentTrack === index}/>
+                    {playlist.map((item, index) => (
+                        <PlaylistItem key={item.track?._id + index} track={item.track} index={index}
+                                      active={currentTrack === index}/>
                     ))}
                 </Box>
             </Collapse>
