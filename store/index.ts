@@ -10,6 +10,7 @@ import {albumSlice} from "./slices/albumSlice";
 import {authApi} from "./api/auth.api";
 import {userSlice} from "./slices/userSlice";
 import {playlistSlice} from "./slices/playlistSlice";
+import {playlistApi} from "./api/playlist.api";
 
 const makeStore = () =>
     configureStore({
@@ -24,13 +25,15 @@ const makeStore = () =>
             [trackApi.reducerPath]: trackApi.reducer,
             [artistApi.reducerPath]: artistApi.reducer,
             [albumApi.reducerPath]: albumApi.reducer,
-            [authApi.reducerPath]: authApi.reducer
+            [authApi.reducerPath]: authApi.reducer,
+            [playlistApi.reducerPath]: playlistApi.reducer,
         },
         middleware: (getDefaultMiddleware) =>
             getDefaultMiddleware()
                 .concat(trackApi.middleware)
                 .concat(artistApi.middleware)
                 .concat(albumApi.middleware)
+                .concat(playlistApi.middleware)
                 .concat(authApi.middleware),
         devTools: true,
     });
