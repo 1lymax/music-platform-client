@@ -1,13 +1,14 @@
 import React, {FC} from 'react';
 import styled from "styled-components";
-import {ITrack} from "../types/track";
+import {ITrack} from "../../types/track";
 import IconButton from "@mui/material/IconButton";
-import {AddCircleOutlined, Delete, Pause, PlayArrow} from '@mui/icons-material';
+import {Delete, Pause, PlayArrow} from '@mui/icons-material';
 import {useRouter} from "next/router";
-import {usePlayerActions} from "../hooks/actions/usePlayerActions";
-import {useTypedSelector} from "../hooks/useTypedSelector";
-import convertHMS from "../utils/convertHMS";
-import {usePlaylistActions} from "../hooks/actions/usePlaylistActions";
+import {usePlayerActions} from "../../hooks/actions/usePlayerActions";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import convertHMS from "../../utils/convertHMS";
+import {usePlaylistActions} from "../../hooks/actions/usePlaylistActions";
+import AddTrackToPlaylist from "../UserActions/AddTrackToPlaylist";
 
 interface TrackItemProps {
     track: ITrack;
@@ -42,25 +43,20 @@ const Artist = styled.div`
   font-style: italic;
 `
 
-const TrackItem: FC<TrackItemProps> = ({track }) => {
+const TrackItem: FC<TrackItemProps> = ({ track }) => {
     const router = useRouter()
-    const {playPause, setActive} = usePlayerActions()
-    const {addTrack, setActive: setPlaylistActive} = usePlaylistActions()
-    const {active, pause, duration, currentTime} = useTypedSelector(state => state.player)
+    const { playPause, setActive } = usePlayerActions()
+    const { setActive: setPlaylistActive } = usePlaylistActions()
+    const { active, pause, duration, currentTime } = useTypedSelector(state => state.player)
 
 
-    const play = (e:any) => {
+    const play = (e: any) => {
         e.stopPropagation()
         setPlaylistActive(false)
         if (active && active.track?._id !== track._id)
             playPause()
         setActive({ track, position: 0 })
         playPause()
-    }
-
-    const addToPlaylist = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        addTrack(track)
     }
 
     return (
@@ -79,10 +75,11 @@ const TrackItem: FC<TrackItemProps> = ({track }) => {
             </TrackWrapper>
             {active?.track?._id === track._id && <div>{convertHMS(currentTime)} / {convertHMS(duration)}</div>
             }
-            <IconButton style={{marginLeft: 'auto'}} onClick={(e) => addToPlaylist(e)}>
-                <AddCircleOutlined/>
-            </IconButton>
-            <IconButton style={{marginLeft: 'auto'}}>
+            <AddTrackToPlaylist track={track}/>
+            {/*<IconButton style={{marginLeft: 'auto'}} onClick={(e) => addToPlaylist(e)}>*/}
+            {/*    <AddCircleOutlined/>*/}
+            {/*</IconButton>*/}
+            <IconButton style={{ marginLeft: 'auto' }}>
                 <Delete/>
             </IconButton>
 

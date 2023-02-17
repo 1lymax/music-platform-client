@@ -1,11 +1,15 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {APP_HYDRATE} from "../index";
 import {ITrack} from "../../types/track";
+import {playlistApi} from "../api/playlist.api";
 import {PlaylistState, playModes} from "../../types/playlist";
 
 
 const initialState: PlaylistState = {
+    _id: '',
     playlistActive: false,
     playlist: [],
+    playlists: [],
     currentTrack: -1,
     playMode: playModes.shuffle
 }
@@ -23,6 +27,9 @@ export const playlistSlice = createSlice({
         },
         setPlayList: (state, action:PayloadAction<PlaylistState["playlist"]>) => {
             state.playlist = action.payload
+        },
+        setPlayLists: (state, action:PayloadAction<PlaylistState["playlists"]>) => {
+            state.playlists = action.payload
         },
         setCurrentTrack: (state, action:PayloadAction<PlaylistState["currentTrack"]>) => {
             state.currentTrack = action.payload
@@ -49,19 +56,23 @@ export const playlistSlice = createSlice({
                 }while (random === state.currentTrack)
                 state.currentTrack = random
             }
-            if (state.playMode === playModes.single) {
-            }
+            if (state.playMode === playModes.single) {}
         }
 
     },
-    // extraReducers: {
-    //     [HYDRATE]: (state, action) => {
-    //         return {
-    //             ...state,
-    //             ...action.payload.player,
-    //         };
-    //     },
-    // },
+    extraReducers (builder)  {
+        builder
+            .addCase(
+                APP_HYDRATE, (state, action) => {
+                    return {
+                        ...state,
+                        ...action.payload.playlist,
+                    };
+                })
+            .addMatcher(playlistApi.endpoints.getUserPlaylists.matchFulfilled, (state, action) => {
+                state.playlists = action.payload
+            })
+    },
 })
 
 export const playlistActionCreators = playlistSlice.actions

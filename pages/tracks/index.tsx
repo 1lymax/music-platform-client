@@ -6,7 +6,7 @@ import styled from "styled-components";
 import {wrapper} from "../../store";
 import {ITrack} from "../../types/track";
 import MainLayout from "../../layouts/MainLayout";
-import TrackList from "../../components/TrackList";
+import TrackList from "../../components/Track/TrackList";
 import {getAllTracks} from "../../store/api/track.api";
 import FilterTracks from "../../components/FilterTracks";
 import {getAllArtists} from "../../store/api/artist.api";

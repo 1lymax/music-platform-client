@@ -10,6 +10,7 @@ import {initialState} from "../../store/slices/userSlice";
 import Cookies from "js-cookie";
 import {useRouter} from "next/router";
 import {useUserActions} from "../../hooks/actions/useUserActions";
+import {useIsAuth} from "../../hooks/useIsAuth";
 
 
 const Container = styled.div``
@@ -27,29 +28,31 @@ const AccountMenu = () => {
     const [login, setLogin] = useState(false);
     const router = useRouter()
     const {setUser} = useUserActions()
-
+    const isAuth = useIsAuth()
 
     const { user } = useTypedSelector(state => state.user)
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        if (user._id) {
+        if (isAuth) {
             setAnchorElUser(event.currentTarget);
         } else {
             setLogin(true)
         }
     };
 
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
 
-    const handleCloseUserMenu = async (link: string) => {
+    const handleMenuClick = (link: string) => {
         if (link === '/logout') {
             handleLogout()
-            setAnchorElUser(null);
-            //await router.push('/')
         } else {
-            setAnchorElUser(null);
-            await router.push(link)
+            router.push(link)
         }
-    };
+        handleCloseUserMenu()
+    }
+
 
     const handleLogout = () => {
         Cookies.remove('access_token')
@@ -58,9 +61,9 @@ const AccountMenu = () => {
     }
 
     const settings = [
-        { title: 'Profile', link: '/profile' },
-        { title: 'Account', link: '/account' },
-        { title: 'Dashboard', link: '/dashboard' },
+        //{ title: 'Profile', link: '/profile' },
+        //{ title: 'Account', link: '/account' },
+        //{ title: 'Dashboard', link: '/dashboard' },
         { title: 'Logout', link: '/logout' }
     ];
 
@@ -94,7 +97,7 @@ const AccountMenu = () => {
                     onClose={handleCloseUserMenu}
                 >
                     {settings.map((setting) => (
-                        <MenuItem key={setting.title} onClick={() => handleCloseUserMenu(setting.link)}>
+                        <MenuItem key={setting.title} onClick={() => handleMenuClick(setting.link)}>
                             <Item>{setting.title}</Item>
                         </MenuItem>
                     ))}

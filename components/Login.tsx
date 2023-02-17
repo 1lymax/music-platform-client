@@ -2,10 +2,12 @@ import styled from "styled-components";
 import {Button, Chip, Divider, TextField} from "@mui/material";
 import React, {Dispatch, FC, forwardRef, SetStateAction, useEffect, useImperativeHandle} from 'react';
 import {useInput} from "../hooks/useInput";
-import {useErrorMessage} from "../hooks/useErrorMessage";
-import {useSuccessMessage} from "../hooks/useSuccessMessage";
-import {useLoginMutation} from "../store/api/auth.api";
 import LoadingContainer from "./UI/LoadingContainer";
+import {useLoginMutation} from "../store/api/auth.api";
+import {useErrorMessage} from "../hooks/useErrorMessage";
+import {useTypedSelector} from "../hooks/useTypedSelector";
+import {useSuccessMessage} from "../hooks/useSuccessMessage";
+import {useGetUserPlaylistsQuery} from "../store/api/playlist.api";
 
 interface LoginProps {
     setOpen?: Dispatch<SetStateAction<boolean>>
@@ -28,8 +30,10 @@ const Login: FC<LoginProps> = forwardRef((props, ref) => {
     const email = useInput('', 'Email')
     const password = useInput('', 'Password')
 
+    const { user } = useTypedSelector(state => state.user)
     const [login, { isSuccess: isSuccessLogin, isLoading: isLoadingLogin, error: errorLogin }] = useLoginMutation()
-    //const [google, { isSuccess: isSuccessG, isLoading: isLoadingG, isError: isErrorG }] = useGoogleOauthMutation()
+    useGetUserPlaylistsQuery(user._id, { skip: !isSuccessLogin })
+
 
     useEffect(() => {
         if (isSuccessLogin) {

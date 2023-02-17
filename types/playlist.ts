@@ -1,4 +1,5 @@
 import {ITrack} from "./track";
+import {IUser} from "./user";
 
 export enum playModes {
     all = 'all',
@@ -6,9 +7,21 @@ export enum playModes {
     single = 'single'
 }
 
+export interface IPlaylist {
+    _id?: string;
+    name: string;
+    picture: string;
+    public: boolean;
+    saved: boolean;
+    tracks: ITrack[];
+    user: IUser
+}
+
 export interface PlaylistState {
+    _id: string;
     playlistActive: boolean;
     playlist: { track: ITrack, position: number }[];
+    playlists: IPlaylist[];
     currentTrack: number;
     playMode: playModes
 }

@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import styled from "styled-components";
-import {ITrack} from "../types/track";
+import {ITrack} from "../../types/track";
 import TrackItem from "./TrackItem";
 
 interface TrackListProps {

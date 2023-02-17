@@ -1,8 +1,8 @@
+import jwtDecode from "jwt-decode";
 import {createSlice} from "@reduxjs/toolkit";
 import {APP_HYDRATE} from "../index";
-import {IUser, UserState} from "../../types/user";
 import {authApi} from "../api/auth.api";
-import jwtDecode from "jwt-decode";
+import {IUser, UserState} from "../../types/user";
 
 
 export const initialState: UserState = {
