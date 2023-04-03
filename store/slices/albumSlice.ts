@@ -26,7 +26,7 @@ export const albumSlice = createSlice({
                         ...action.payload.album,
                     };
                 })
-            .addMatcher(albumApi.endpoints.searchAlbum.matchFulfilled, (state, action) => {
+            .addMatcher(albumApi.endpoints.getAllAlbums.matchFulfilled, (state, action) => {
                 state.albums = action.payload
             })
     },

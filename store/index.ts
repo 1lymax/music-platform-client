@@ -11,8 +11,9 @@ import {authApi} from "./api/auth.api";
 import {userSlice} from "./slices/userSlice";
 import {playlistSlice} from "./slices/playlistSlice";
 import {playlistApi} from "./api/playlist.api";
+import {uploaderSlice} from "./slices/uploaderSlice";
 
-const makeStore = () =>
+export const makeStore = () =>
     configureStore({
         reducer: {
             [playerSlice.name]: playerSlice.reducer,
@@ -21,6 +22,7 @@ const makeStore = () =>
             [albumSlice.name]: albumSlice.reducer,
             [userSlice.name]: userSlice.reducer,
             [playlistSlice.name]: playlistSlice.reducer,
+            [uploaderSlice.name]: uploaderSlice.reducer,
 
             [trackApi.reducerPath]: trackApi.reducer,
             [artistApi.reducerPath]: artistApi.reducer,

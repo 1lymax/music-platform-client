@@ -18,14 +18,12 @@ export const trackApi = createApi({
             query: (id) => `track/${id}`,
         }),
         createTrack: builder.mutation<ITrack, FormData>({
-            query: (args) => ({
+            query: (body) => ({
                 url: `track/`,
                 method: 'POST',
-                body: args
+                body
             }),
-
         })
-
     }),
 })
 

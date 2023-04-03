@@ -1,14 +1,12 @@
-import React, {FC} from 'react';
-import styled from "styled-components";
-import {ITrack} from "../../types/track";
-import IconButton from "@mui/material/IconButton";
-import {Delete, Pause, PlayArrow} from '@mui/icons-material';
+import React, {FC} from "react";
 import {useRouter} from "next/router";
-import {usePlayerActions} from "../../hooks/actions/usePlayerActions";
-import {useTypedSelector} from "../../hooks/useTypedSelector";
+import styled from "styled-components";
+import IconButton from "@mui/material/IconButton";
+import {Delete, Pause, PlayArrow} from "@mui/icons-material";
+import {ITrack} from "../../types/track";
 import convertHMS from "../../utils/convertHMS";
-import {usePlaylistActions} from "../../hooks/actions/usePlaylistActions";
-import AddTrackToPlaylist from "../UserActions/AddTrackToPlaylist";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {usePlayerActions, usePlaylistActions} from "../../hooks/dispatch";
 
 interface TrackItemProps {
     track: ITrack;
@@ -70,12 +68,12 @@ const TrackItem: FC<TrackItemProps> = ({ track }) => {
             <Image width={70} height={70} src={process.env.NEXT_PUBLIC_API_URL + track.picture}/>
             <TrackWrapper>
                 <TrackName>{track.name}</TrackName>
-                <Album>{track.albumId?.name}</Album>
-                <Artist>{track.artistId?.name}</Artist>
+                <Album>{track.album?.name}</Album>
+                <Artist>{track.artist?.name}</Artist>
             </TrackWrapper>
             {active?.track?._id === track._id && <div>{convertHMS(currentTime)} / {convertHMS(duration)}</div>
             }
-            <AddTrackToPlaylist track={track}/>
+            {/*<TrackItemMenu/>*/}
             {/*<IconButton style={{marginLeft: 'auto'}} onClick={(e) => addToPlaylist(e)}>*/}
             {/*    <AddCircleOutlined/>*/}
             {/*</IconButton>*/}

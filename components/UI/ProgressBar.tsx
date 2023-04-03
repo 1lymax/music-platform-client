@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC} from 'react';
+import React, {ChangeEvent, FC, useRef} from "react";
 import styled from "styled-components";
 import convertHMS from '../../utils/convertHMS'
 
@@ -25,6 +25,7 @@ const Input = styled.input`
 `
 
 const ProgressBar: FC<ProgressBarProps> = ({left, right, onChange, width, timeConvert}) => {
+    const progressBar = useRef(null)
     return (
         <Container width={width}>
             <Input
@@ -34,7 +35,7 @@ const ProgressBar: FC<ProgressBarProps> = ({left, right, onChange, width, timeCo
                 max={right}
                 onChange={onChange}
             />
-            <Label>{timeConvert ? convertHMS(left) : left} / {timeConvert ? convertHMS(right) : right}</Label>
+            <Label ref={progressBar}>{timeConvert ? convertHMS(left) : left} / {timeConvert ? convertHMS(right) : right}</Label>
         </Container>
     );
 };

@@ -11,18 +11,18 @@ import AddAlbum from "../../components/AddAlbum";
 import MainLayout from "../../layouts/MainLayout";
 import AppDialog from "../../components/UI/AppDialog";
 import AddArtist from "../../components/AddArtist";
-import AddButton from "../../components/UI/AddButton";
-import SelectBox from "../../components/UI/SelectBox";
+import AddButton from "../../components/UI/Buttons/AddButton";
+import SelectTemplate from "../../components/UI/Selects/SelectTemplate";
 import StepWrapper from "../../components/StepWrapper";
 import FileUploader from "../../components/FileUploader";
-import {useSearchAlbumQuery} from "../../store/api/album.api";
-import {useErrorMessage} from "../../hooks/useErrorMessage";
 import ImagePreview from "../../components/UI/ImagePreview";
 import AudioPreview from "../../components/UI/AudioPreview";
-import {useGetAllArtistsQuery} from "../../store/api/artist.api";
+import {useSearchAlbumQuery} from "../../store/api/album.api";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useGetAllArtistsQuery} from "../../store/api/artist.api";
 import {useCreateTrackMutation} from "../../store/api/track.api";
 import {useSuccessMessage} from "../../hooks/useSuccessMessage";
+import {useErrorMessage} from "../../hooks/useErrorMessage";
 
 
 const Step = styled.div`
@@ -47,10 +47,10 @@ const ButtonContainer = styled.div`
 
 const Create: FC = () => {
     const router = useRouter()
-    const [album, setAlbum] = useState<IAlbum>();
-    const [artist, setArtist] = useState<IArtist>();
     const [audio, setAudio] = useState<any>();
+    const [album, setAlbum] = useState<IAlbum>();
     const [picture, setPicture] = useState<any>();
+    const [artist, setArtist] = useState<IArtist>();
     const [activeStep, setActiveStep] = useState<number>(0);
     const [artistDialog, setArtistDialog] = useState<boolean>(false);
     const [albumDialog, setAlbumDialog] = useState<boolean>(false);
@@ -62,7 +62,7 @@ const Create: FC = () => {
     const {albums} = useTypedSelector(state => state.album)
 
     useGetAllArtistsQuery()
-    useSearchAlbumQuery({artistId: artist?._id})
+    useSearchAlbumQuery({artist: artist?._id})
 
     const [createTrack, {isSuccess, error, }] = useCreateTrackMutation()
 
@@ -88,8 +88,9 @@ const Create: FC = () => {
             form.append("text", text.componentProps.value)
             form.append("picture", picture)
             form.append("audio", audio)
-            if (album?._id) form.append("albumId", album._id)
-            if (artist?._id) form.append("artistId", artist._id)
+            if (album?._id) form.append("album", album._id)
+            if (artist?._id) form.append("artist", artist._id)
+            form.forEach((val, item) => console.log(item, val))
             createTrack(form)
         }
     }
@@ -111,12 +112,12 @@ const Create: FC = () => {
 							sx={{marginBottom: '15px'}}
 						/>
 						<SelectContainer>
-							<SelectBox label={'Artist...'} setValue={setArtist} options={artists}/>
+							<SelectTemplate label={'Artist...'} onChange={setArtist} options={artists}/>
 							<AddButton icon={<Add/>}
                                        onClick={() => setArtistDialog(true)}>Add...</AddButton>
 						</SelectContainer>
 						<SelectContainer>
-							<SelectBox label={albumName()} setValue={setAlbum} options={albums}/>
+							<SelectTemplate label={albumName()} onChange={setAlbum} options={albums}/>
 							<AddButton icon={<Add/>}
                                        onClick={() => setAlbumDialog(true)}>Add...</AddButton>
 						</SelectContainer>

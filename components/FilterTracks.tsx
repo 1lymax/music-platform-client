@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from "styled-components";
-import SelectBox from "./UI/SelectBox";
+import SelectTemplate from "./UI/Selects/SelectTemplate";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import {useGetAllArtistsQuery} from "../store/api/artist.api";
 import {useSearchAlbumQuery} from "../store/api/album.api";
@@ -19,7 +19,7 @@ const FilterTracks = () => {
     const {albums} = useTypedSelector(state => state.album)
 
     useGetAllArtistsQuery()
-    useSearchAlbumQuery({artistId: artist?._id})
+    useSearchAlbumQuery({artist: artist?._id})
 
     const albumName = () => {
         if (artist)
@@ -30,8 +30,8 @@ const FilterTracks = () => {
 
     return (
         <Container>
-            <SelectBox label={'Artist...'} setValue={setArtist} options={artists}/>
-            <SelectBox label={albumName()} setValue={setAlbum} options={albums}/>
+            <SelectTemplate label={'Artist...'} onChange={setArtist} options={artists}/>
+            <SelectTemplate label={albumName()} onChange={setAlbum} options={albums}/>
         </Container>
     );
 };

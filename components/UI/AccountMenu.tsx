@@ -9,8 +9,8 @@ import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {initialState} from "../../store/slices/userSlice";
 import Cookies from "js-cookie";
 import {useRouter} from "next/router";
-import {useUserActions} from "../../hooks/actions/useUserActions";
 import {useIsAuth} from "../../hooks/useIsAuth";
+import {useUserActions} from "../../hooks/dispatch";
 
 
 const Container = styled.div``

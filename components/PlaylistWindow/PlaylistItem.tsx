@@ -1,11 +1,10 @@
 import React, {FC} from 'react';
 import styled from "styled-components";
 import {ITrack} from "../../types/track";
-import {usePlayerActions} from "../../hooks/actions/usePlayerActions";
 import IconButton from "@mui/material/IconButton";
 import {Pause, PlayArrow} from "@mui/icons-material";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {usePlaylistActions} from "../../hooks/actions/usePlaylistActions";
+import {usePlayerActions, usePlaylistActions} from "../../hooks/dispatch";
 
 interface PlaylistItemProps {
     track: ITrack,

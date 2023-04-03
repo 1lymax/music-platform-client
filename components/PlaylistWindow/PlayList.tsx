@@ -9,8 +9,7 @@ import {playModes} from "../../types/playlist";
 import {useIsAuth} from "../../hooks/useIsAuth";
 import PlaylistWindowMenu from "./PlaylistWindowMenu";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {usePlayerActions} from "../../hooks/actions/usePlayerActions";
-import {usePlaylistActions} from "../../hooks/actions/usePlaylistActions";
+import {usePlayerActions, usePlaylistActions} from "../../hooks/dispatch";
 
 
 export interface PlayListProps {

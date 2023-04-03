@@ -49,6 +49,9 @@ const Index: FC<IndexProps> = ({tracks}) => {
                 <Card>
                     <CardContent>
                         <Title>Upload track</Title>
+                        <Button onClick={() => router.push('/tracks/multiple')}>
+                            Multiple Upload
+                        </Button>
                         <Button onClick={() => router.push('/tracks/create')}>
                             Upload
                         </Button>

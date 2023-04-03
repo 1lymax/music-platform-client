@@ -1,15 +1,13 @@
-import React, {FC, useState} from 'react';
-import {usePlaylistActions} from "../../hooks/actions/usePlaylistActions";
+import React, {FC, useState} from "react";
 import {ITrack} from "../../types/track";
 import {IPlaylist} from "../../types/playlist";
-import IconButton from "@mui/material/IconButton";
-import {MoreVert} from "@mui/icons-material";
-import {Chip, Divider, Menu, MenuItem} from "@mui/material";
+import {Divider, Menu, MenuItem, Typography} from "@mui/material";
 import {useAddTrackToPlaylistMutation} from "../../store/api/playlist.api";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useIsAuth} from "../../hooks/useIsAuth";
 import {useSuccessMessage} from "../../hooks/useSuccessMessage";
 import {useErrorMessage} from "../../hooks/useErrorMessage";
+import {usePlaylistActions} from "../../hooks/dispatch";
 
 
 interface AddTrackToPlaylistProps {
@@ -17,8 +15,9 @@ interface AddTrackToPlaylistProps {
 }
 
 const AddTrackToPlaylist: FC<AddTrackToPlaylistProps> = ({ track }) => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    const [menuPosition, setMenuPosition] = useState<any>(null);
+    const [menuMouseOver, setMenuMouseOver] = useState(false);
+    const open = Boolean(menuPosition);
 
     const { addTrack } = usePlaylistActions()
     const [addTrackMutation, { isSuccess, error, }] = useAddTrackToPlaylistMutation()
@@ -27,16 +26,25 @@ const AddTrackToPlaylist: FC<AddTrackToPlaylistProps> = ({ track }) => {
     useSuccessMessage('Track added', isSuccess)
     useErrorMessage('Error adding track', error)
 
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleOpen = (e: React.MouseEvent<HTMLElement>) => {
+        setMenuPosition({
+            top: e.pageY,
+            left: e.pageX
+        });
         e.stopPropagation()
         e.preventDefault()
-        setAnchorEl(e.currentTarget);
     };
 
-    const handleClose = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        e.preventDefault()
-        setAnchorEl(null);
+    const handleClose = async (e: React.MouseEvent) => {
+        console.log('menuOpen1', menuMouseOver)
+        await setTimeout(() => {
+            console.log('menuOpen 2', menuMouseOver)
+            if (!menuMouseOver)
+                setMenuPosition(null);
+            e.stopPropagation()
+            e.preventDefault()
+        }, 1000)
+
     };
 
     const addToPlaylist = (e: React.MouseEvent, playlist: IPlaylist) => {
@@ -55,33 +63,58 @@ const AddTrackToPlaylist: FC<AddTrackToPlaylistProps> = ({ track }) => {
 
     return (
         <div>
-            <IconButton
-                aria-label="more"
-                id="long-button"
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-expanded={open ? 'true' : undefined}
+            <Typography
+                aria-owns={open ? 'mouse-over-popover' : undefined}
                 aria-haspopup="true"
-                onClick={handleClick}
+                onMouseEnter={handleOpen}
+                onMouseLeave={handleClose}
             >
-                <MoreVert/>
-            </IconButton>
-            <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                }}
-            >
-                <MenuItem onClick={addToCurrentPlaylist}>Current playlist</MenuItem>
-                <Divider>
-                    <Chip label="or My Playlists"/>
-                </Divider>
-                {playlists.map(item => (
-                    <MenuItem onClick={(e) => addToPlaylist(e, item)} key={item._id}>{item.name}</MenuItem>
-                ))}
-            </Menu>
+                Add track to playlist
+            </Typography>
+            {/*<Popover*/}
+            {/*    id="mouse-over-popover"*/}
+            {/*    sx={{*/}
+            {/*        pointerEvents: 'none',*/}
+            {/*    }}*/}
+            {/*    open={open}*/}
+            {/*    anchorEl={anchorEl}*/}
+            {/*    anchorOrigin={{*/}
+            {/*        vertical: 'top',*/}
+            {/*        horizontal: 'right',*/}
+            {/*    }}*/}
+            {/*    transformOrigin={{*/}
+            {/*        vertical: 'top',*/}
+            {/*        horizontal: 'left',*/}
+            {/*    }}*/}
+            {/*    disableRestoreFocus*/}
+
+            {/*>*/}
+
+                <Menu open={open}
+                      anchorReference="anchorPosition"
+                      anchorPosition={menuPosition}
+                      onMouseEnter={(e) => {
+                          console.log('mouseenter')
+                          setMenuMouseOver(true)
+                          handleOpen(e)
+                      }}
+                      onMouseLeave={(e) => {
+                          setMenuMouseOver(false)
+                          handleClose(e)
+                      }}
+                >
+                    <MenuItem
+                        onClick={addToCurrentPlaylist}
+                    >
+                        Current playlist
+                    </MenuItem>
+                    <Divider variant={"middle"}/>
+                    {playlists.map(item => (
+                        <MenuItem onClick={(e) => addToPlaylist(e, item)}
+                                  key={item._id}>{item.name}</MenuItem>
+                    ))}
+                </Menu>
+            {/*</Popover>*/}
         </div>
     );
 };
