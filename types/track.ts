@@ -9,18 +9,18 @@ export interface IComment {
 export interface ITrack {
     _id: string;
     name: string;
-    artistId: {
+    artist: {
         _id?: string;
         name?: string;
         tracks?: string[];
         albums?: string[];
     }
-    albumId: {
+    album: {
         _id?: string;
         name?: string;
         year?: number;
         picture?: string;
-        artistId?: string;
+        artist?: string;
         tracks?: string[]
     }
     text: string;

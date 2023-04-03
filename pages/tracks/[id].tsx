@@ -65,8 +65,8 @@ const TrackPage: FC<PageProps> = ({track}) => {
                     <Image src={process.env.NEXT_PUBLIC_API_URL + track?.picture}/>
                     <Info>
                         <Title>{track?.name}</Title>
-                        <SubTitle>Album - {track?.albumId?.name}</SubTitle>
-                        <SubTitle>Artist - {track?.artistId?.name}</SubTitle>
+                        <SubTitle>Album - {track?.album?.name}</SubTitle>
+                        <SubTitle>Artist - {track?.artist?.name}</SubTitle>
                         <SubTitle>Listens - {track?.listens}</SubTitle>
                     </Info>
                 </Card>
