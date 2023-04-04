@@ -10,18 +10,22 @@ import {IArtist} from "../../../types/artist";
 import SelectTemplate from "./SelectTemplate";
 import AddButtonIcon from "../Buttons/AddButtonIcon";
 import {useSearchAlbumQuery} from "../../../store/api/album.api";
-import {Link} from "@mui/material";
+import {Link, Typography} from "@mui/material";
 
 const Container = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 40px;
 `;
 
-const InputWrapper = styled.div`
+const ButtonCell = styled.div`
   display: flex;
-  flex-direction: row;
+  justify-content: center;
   align-items: center;
+`;
+
+const WarningCell = styled.div`
+  margin: 0 5px;
 `;
 
 interface ISelectAlbum {
@@ -52,32 +56,35 @@ export const SelectAlbum: FC<ISelectAlbum> = (props) => {
     };
 
     const handleAddNew = (album: IAlbum) => {
-        refetch()
-        setAlbum(album)
-    }
+        refetch();
+        setAlbum(album);
+    };
 
     return (
         <Container>
-            <InputWrapper>
-                <SelectTemplate label={getAlbumName()} defaultValue={defaultValue} onChange={setAlbum}
-                                options={albums}/>
+            <SelectTemplate label={getAlbumName()} defaultValue={defaultValue} onChange={setAlbum}
+                            options={albums}/>
+            <ButtonCell>
                 <AddButtonIcon //icon={<Add/>}
                     onClick={() => setAlbumDialog(true)}></AddButtonIcon>
-            </InputWrapper>
+            </ButtonCell>
             {!defaultValue && showAddNewInfo &&
-				<>
-					<div>{albumName} Album not found.</div>
-					<div>You can <Link component={"button"}
-									   onClick={() => setAlbumDialog(true)}
-									   sx={{ textDecorationStyle: "dashed" }}
-					>
-						add new.
-					</Link>
-					</div>
-				</>
+				<WarningCell>
+					<Typography variant={"body2"} sx={{ textDecorationStyle: "dashed" }}>
+						<div><Link component={"button"}
+								   variant={"body2"}
+								   onClick={() => setAlbumDialog(true)}
+								   sx={{ textDecorationStyle: "dashed" }}
+						>
+							Add album
+						</Link> {albumName}</div>
+
+					</Typography>
+				</WarningCell>
             }
             <AppDialog open={albumDialog} setOpen={setAlbumDialog} title={"Add new album"}>
-                <AddAlbum setOpen={setAlbumDialog} defaultValue={albumName} defaultArtist={artist} onUpdate={handleAddNew}/>
+                <AddAlbum setOpen={setAlbumDialog} defaultValue={albumName} defaultArtist={artist}
+                          onUpdate={handleAddNew}/>
             </AppDialog>
         </Container>
     );

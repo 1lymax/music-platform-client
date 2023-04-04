@@ -1,11 +1,10 @@
 // @flow
 import * as React from "react";
+import {FC, useEffect, useState} from "react";
 import {Button} from "@mui/material";
 import {useSnackbar} from "notistack";
 import styled from "styled-components";
-import {FC, useEffect, useState} from "react";
 import * as mmb from "music-metadata-browser";
-import {AddAPhoto, KeyboardDoubleArrowDown} from "@mui/icons-material";
 import {IArtist} from "../../types/artist";
 import MainLayout from "../../layouts/MainLayout";
 import {IUploaderFile} from "../../types/uploader";
@@ -14,19 +13,12 @@ import {useGetAllAlbumsQuery} from "../../store/api/album.api";
 import {useGetAllArtistsQuery} from "../../store/api/artist.api";
 import {useCreateTrackMutation} from "../../store/api/track.api";
 import DragContainer from "../../components/Uploader/DragContainer";
-import {UploaderItem} from "../../components/Uploader/UploaderItem";
-import {ImageThumbnail} from "../../components/UI/Image/ImageThumbnail";
+import {MusicUploaderItem} from "../../components/Uploader/MusicUploaderItem";
+import {UploaderContainer} from "../../components/Uploader/UploaderContainer";
 
 
 const Container = styled.div`
   width: 100%;
-`;
-
-const DragWrapper = styled.div`
-  display: flex;
-  width: 56px;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const ActionContainer = styled.div`
@@ -124,6 +116,7 @@ const Multiple: FC<IMultipleCreate> = () => {
         const updatedList = fileList.map(file => {
             return { ...file, picture: files[0] };
         });
+        console.log(updatedList);
         setFileList(updatedList);
     };
 
@@ -149,23 +142,19 @@ const Multiple: FC<IMultipleCreate> = () => {
     return (
         <MainLayout>
             {Boolean(fileList?.length) &&
-				<DragWrapper>
-					<DragContainer setFiles={handleAllPicturesSetter}
-								   accept={"audio"}
-								   styles={{ width: "56px", height: "56px", margin: "0 5px 15px 0", padding: "15px" }}
-					>
-						<AddAPhoto color={"primary"}/>
-					</DragContainer>
-                    <KeyboardDoubleArrowDown color={"action"}/>
-				</DragWrapper>
+				<UploaderContainer width="70px"
+                                   height="70px"
+                                   zoomButton
+                                   isPreviewVisible={false}
+                                   setFiles={handleAllPicturesSetter}
+                />
             }
-            <ImageThumbnail source={""}/>
             <Container>
                 {fileList && fileList.map((file) => (
-                    <UploaderItem file={file}
-                                  key={file.audio.name + file.duration}
-                                  onUpdate={handleItemChange}
-                                  onRemove={handleItemRemove}/>
+                    <MusicUploaderItem file={file}
+                                       key={file.audio.name + file.duration}
+                                       onUpdate={handleItemChange}
+                                       onRemove={handleItemRemove}/>
                 ))}
             </Container>
             <ActionContainer>

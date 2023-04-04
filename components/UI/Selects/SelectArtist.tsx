@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import {Link} from "@mui/material";
+import {Link, Typography} from "@mui/material";
 import {FC, useState} from "react";
 import styled from "styled-components";
 
@@ -13,15 +13,19 @@ import {useTypedSelector} from "../../../hooks/useTypedSelector";
 
 const Container = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 40px;
 `;
 
-const InputWrapper = styled.div`
+const ButtonCell = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: row;
+  justify-content: center;
   align-items: center;
+`;
+
+const WarningCell = styled.div`
+  margin: 0 10px;
 `;
 
 interface ISelectArtist {
@@ -38,21 +42,23 @@ export const SelectArtist: FC<ISelectArtist> = (props) => {
 
     return (
         <Container>
-            <InputWrapper>
-                <SelectTemplate label={"Artist..."} onChange={setArtist} options={artists} defaultValue={defaultValue}/>
+            <SelectTemplate label={"Artist..."} onChange={setArtist} options={artists} defaultValue={defaultValue}/>
+            <ButtonCell>
                 <AddButtonIcon onClick={() => setArtistDialog(true)}/>
-            </InputWrapper>
+            </ButtonCell>
             {!defaultValue && showAddNewInfo &&
-				<>
-					<div>{artistName} Artist not found.</div>
-					<div>You can <Link component={"button"}
-									   onClick={() => setArtistDialog(true)}
-									   sx={{ textDecorationStyle: "dashed" }}
-					>
-						add new.
-					</Link>
-					</div>
-				</>
+				<WarningCell>
+					<Typography variant={"body2"}>
+						<div>{artistName} Artist not found.</div>
+						<div>You can <Link component={"button"}
+										   onClick={() => setArtistDialog(true)}
+										   sx={{ textDecorationStyle: "dashed" }}
+						>
+							add new.
+						</Link>
+						</div>
+					</Typography>
+				</WarningCell>
             }
             <AppDialog open={artistDialog} setOpen={setArtistDialog} title={"Add new artist"}>
                 <AddArtist setOpen={setArtistDialog} defaultValue={artistName} onUpdate={setArtist}/>

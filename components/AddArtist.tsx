@@ -1,15 +1,14 @@
 import * as React from "react";
-import {Dispatch, FC, forwardRef, SetStateAction, useEffect, useImperativeHandle, useState} from "react";
 import styled from "styled-components";
 import {TextField} from "@mui/material";
+import {Dispatch, FC, forwardRef, SetStateAction, useEffect, useImperativeHandle, useState} from "react";
 
-import FileUploader from "./FileUploader";
+import {IArtist} from "../types/artist";
 import {useInput} from "../hooks/useInput";
-import ImagePreview from "./UI/ImagePreview";
 import {useErrorMessage} from "../hooks/useErrorMessage";
 import {useSuccessMessage} from "../hooks/useSuccessMessage";
+import {UploaderContainer} from "./Uploader/UploaderContainer";
 import {useCreateArtistMutation} from "../store/api/artist.api";
-import {IArtist} from "../types/artist";
 
 interface AddArtistProps {
     setOpen?: Dispatch<SetStateAction<boolean>>;
@@ -17,18 +16,19 @@ interface AddArtistProps {
     onUpdate?: (artist: IArtist) => void;
 }
 
-
 const Step = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-row-gap: 15px;
   height: 100%;
   width: 500px;
 `;
+
 /* eslint-disable react/display-name */
 const AddArtist: FC<AddArtistProps> = forwardRef((props, ref) => {
     const { setOpen, defaultValue, onUpdate } = props;
     const name = useInput(defaultValue);
-    const [picture, setPicture] = useState<any>();
+    const [image, setImage] = useState<any>();
 
     const [createArtist, { isSuccess, error, data }] = useCreateArtistMutation();
 
@@ -39,7 +39,7 @@ const AddArtist: FC<AddArtistProps> = forwardRef((props, ref) => {
     useEffect(() => {
         if (isSuccess) {
             name.setValue("");
-            setPicture(null);
+            setImage(null);
             setOpen && setOpen(false);
             if (data && onUpdate) {
                 onUpdate(data);
@@ -51,7 +51,7 @@ const AddArtist: FC<AddArtistProps> = forwardRef((props, ref) => {
         save: () => {
             const form = new FormData();
             form.append("name", name.componentProps.value);
-            form.append("picture", picture);
+            form.append("picture", image);
             createArtist(form);
         }
     }));
@@ -62,13 +62,8 @@ const AddArtist: FC<AddArtistProps> = forwardRef((props, ref) => {
                 <TextField
                     {...name.componentProps}
                     label={"Artist name"}
-                    sx={{ margin: "15px 0" }}
                 />
-                <FileUploader setFile={setPicture} accept="image/*">
-                    {picture &&
-						<ImagePreview file={picture}/>
-                    }
-                </FileUploader>
+                <UploaderContainer setFiles={setImage} zoomButton={false} width="200px" height="200px"/>
             </Step>
         </div>
     );
