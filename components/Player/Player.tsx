@@ -1,16 +1,18 @@
 import styled from "styled-components";
 import IconButton from "@mui/material/IconButton";
-import React, {ChangeEvent, FC, useEffect, useRef} from "react";
 import {Pause, PlayArrow, VolumeUp} from "@mui/icons-material";
+import React, {ChangeEvent, FC, useEffect, useRef} from "react";
 
+import {wrapper} from "../../store";
 import ProgressBar from "../UI/ProgressBar";
 import {playModes} from "../../types/playlist";
-import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {usePlayerActions, usePlaylistActions} from "../../hooks/dispatch";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 
 interface PlayerProps {
-
+    //playList: PlaylistState,
+    //player: PlayerState
 }
 
 const Container = styled.div`
@@ -60,6 +62,8 @@ const VolumeContainer = styled.div`
 
 const Player: FC<PlayerProps> = () => {
     let audio = useRef<HTMLAudioElement>(typeof Audio !== "undefined" && new Audio());
+    //const { playlistActive, playMode } = playList;
+    //const { pause, volume, active, duration, currentTime } = player;
     const { playlistActive, playMode } = useTypedSelector(state => state.playlist);
     const { pause, volume, active, duration, currentTime } = useTypedSelector(state => state.player);
 
@@ -68,7 +72,6 @@ const Player: FC<PlayerProps> = () => {
 
     useEffect(() => {
         if (!audio.current) {
-            console.log('setting new audio');
             audio.current = new Audio();
         } else {
             setAudio();
@@ -79,26 +82,14 @@ const Player: FC<PlayerProps> = () => {
         if (pause) {
             audio.current.pause();
         } else {
-            console.log("try to play");
-            console.log(audio);
             audio.current.play().then(() => {
             });
         }
     }, [pause, active]);
 
 
-    useEffect(() => {
-        console.log('component mounted');
-        return () => {
-            console.log('component unmounted');
-            audio.current.remove();
-        }
-
-    },[]);
-
     const setAudio = () => {
         if (audio && active) {
-            console.log("active", active);
             audio.current.src = process.env.NEXT_PUBLIC_API_URL + active.track.audio;
             audio.current.volume = volume / 100;
             audio.current.onloadedmetadata = () => {
@@ -160,3 +151,15 @@ const Player: FC<PlayerProps> = () => {
 };
 
 export default Player;
+
+export const getInitialPageProps = wrapper.getInitialPageProps(store => async () => {
+    const playlistState = store.getState().playlist;
+    const playerState = store.getState().player;
+    console.log(playlistState);
+    return {
+        props: {
+            playlistState: playlistState,
+            playerState: playerState
+        }
+    };
+});

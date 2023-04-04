@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC} from "react";
 import {Button} from "@mui/material";
 import {useRouter} from "next/router";
 import styled from "styled-components";
@@ -7,9 +7,7 @@ import {wrapper} from "../../store";
 import {ITrack} from "../../types/track";
 import MainLayout from "../../layouts/MainLayout";
 import TrackList from "../../components/Track/TrackList";
-import {getAllTracks} from "../../store/api/track.api";
-import FilterTracks from "../../components/FilterTracks";
-import {getAllArtists} from "../../store/api/artist.api";
+import {getAllTracks, trackApi} from "../../store/api/track.api";
 
 interface IndexProps {
     tracks: ITrack[];
@@ -45,7 +43,7 @@ const Index: FC<IndexProps> = ({tracks}) => {
     return (
         <MainLayout>
             <Container>
-                <FilterTracks/>
+                {/*<FilterTracks/>*/}
                 <Card>
                     <CardContent>
                         <Title>Upload track</Title>
@@ -71,12 +69,13 @@ export default Index;
 
 export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
     const tracks = await store.dispatch(getAllTracks.initiate())
-    const artists = await store.dispatch(getAllArtists.initiate())
-    //await Promise.all(store.dispatch(trackApi.util.getRunningQueriesThunk()))
+    //const artists = await store.dispatch(getAllArtists.initiate())
+    await Promise.all(store.dispatch(trackApi.util.getRunningQueriesThunk()))
+
     return {
         props: {
             tracks: tracks.data,
-            status: tracks.status
+            status: tracks.status,
         }
     }
 })

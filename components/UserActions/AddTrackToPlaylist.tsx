@@ -4,7 +4,6 @@ import {IPlaylist} from "../../types/playlist";
 import {Divider, Menu, MenuItem, Typography} from "@mui/material";
 import {useAddTrackToPlaylistMutation} from "../../store/api/playlist.api";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {useIsAuth} from "../../hooks/useIsAuth";
 import {useSuccessMessage} from "../../hooks/useSuccessMessage";
 import {useErrorMessage} from "../../hooks/useErrorMessage";
 import {usePlaylistActions} from "../../hooks/dispatch";
@@ -36,9 +35,9 @@ const AddTrackToPlaylist: FC<AddTrackToPlaylistProps> = ({ track }) => {
     };
 
     const handleClose = async (e: React.MouseEvent) => {
-        console.log('menuOpen1', menuMouseOver)
+        //console.log('menuOpen1', menuMouseOver)
         await setTimeout(() => {
-            console.log('menuOpen 2', menuMouseOver)
+            //console.log('menuOpen 2', menuMouseOver)
             if (!menuMouseOver)
                 setMenuPosition(null);
             e.stopPropagation()
@@ -53,11 +52,11 @@ const AddTrackToPlaylist: FC<AddTrackToPlaylistProps> = ({ track }) => {
     }
 
     const addToCurrentPlaylist = (e: React.MouseEvent) => {
-        if (useIsAuth()) {
-            addTrackMutation({ tracks: [track._id], playlistId: currentPlaylistId })
-        } else {
+       // if (useIsAuth()) {
+      //      addTrackMutation({ tracks: [track._id], playlistId: currentPlaylistId })
+        //} else {
             addTrack(track)
-        }
+       // }
         handleClose(e)
     }
 

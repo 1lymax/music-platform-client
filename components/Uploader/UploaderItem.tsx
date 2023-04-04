@@ -3,7 +3,7 @@ import {FC, useEffect, useState} from "react";
 import * as React from "react";
 import styled from "styled-components";
 import {TextField} from "@mui/material";
-import {AddAPhoto, Delete} from "@mui/icons-material";
+import {AddAPhoto, Delete, NoPhotography} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import {IUploaderFile} from "../../types/uploader";
 import {SelectAlbum} from "../UI/Selects/SelectAlbum";
@@ -25,6 +25,13 @@ const FileContainer = styled.div`
   width: 100%;
 `;
 
+const ImageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 10px 0 0;
+`;
+
 const SelectContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,7 +49,7 @@ interface IUploaderItem {
 }
 
 export const UploaderItem: FC<IUploaderItem> = ({ file, onUpdate, onRemove }) => {
-    const [imagePreview, setImagePreview] = useState<string>('');
+    const [imagePreview, setImagePreview] = useState<string>("");
     const { artists } = useTypedSelector(state => state.artist);
     const { albums } = useTypedSelector(state => state.album);
 
@@ -62,7 +69,11 @@ export const UploaderItem: FC<IUploaderItem> = ({ file, onUpdate, onRemove }) =>
         return albums.find(album => album.name.toLowerCase() === name?.toLowerCase());
     };
 
-    const handleUploadedPicture = (files: (FileList | null)) => {
+    const handleRemoveImage = () => {
+        onUpdate({ ...file, picture: null });
+    }
+
+    const handleUploadedImage = (files: (FileList | null)) => {
         if (!files) return null;
         let reader = new FileReader();
         reader.readAsDataURL(files[0]);
@@ -75,8 +86,11 @@ export const UploaderItem: FC<IUploaderItem> = ({ file, onUpdate, onRemove }) =>
     };
 
     useEffect(() => {
-        let reader = new FileReader()
-        if (!file.picture) return
+        let reader = new FileReader();
+        if (!file.picture) {
+            setImagePreview('');
+            return
+        }
         reader.readAsDataURL(file.picture);
         reader.onloadend = () => {
             if (reader.result) {
@@ -88,14 +102,24 @@ export const UploaderItem: FC<IUploaderItem> = ({ file, onUpdate, onRemove }) =>
 
     return (
         <FileContainer>
-            <DragContainer setFiles={handleUploadedPicture}
-                           accept={"audio"}
-                           isVisible={!imagePreview}
-                           styles={{ width: "56px", height: "56px", margin: "0 5px 5px 0", padding: "15px" }}
-            >
+            <ImageContainer>
+                <DragContainer setFiles={handleUploadedImage}
+                               accept={"image"}
+                               isVisible={!imagePreview}
+                               styles={{ width: "56px", height: "56px", margin: "0", padding: "15px" }}
+                >
                     <AddAPhoto color={"primary"}/>
-            </DragContainer>
-            {imagePreview && <ImageThumbnail source={imagePreview} />}
+                </DragContainer>
+                {imagePreview &&
+					<>
+						<ImageThumbnail source={imagePreview}/>
+                        <IconButton color={"primary"} size={"small"} onClick={handleRemoveImage}>
+                            <NoPhotography/>
+                        </IconButton>
+
+					</>
+                }
+            </ImageContainer>
 
             <FirstColumn>
                 <TextField

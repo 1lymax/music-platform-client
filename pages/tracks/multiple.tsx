@@ -5,7 +5,7 @@ import {useSnackbar} from "notistack";
 import styled from "styled-components";
 import {FC, useEffect, useState} from "react";
 import * as mmb from "music-metadata-browser";
-import {AddAPhoto} from "@mui/icons-material";
+import {AddAPhoto, KeyboardDoubleArrowDown} from "@mui/icons-material";
 import {IArtist} from "../../types/artist";
 import MainLayout from "../../layouts/MainLayout";
 import {IUploaderFile} from "../../types/uploader";
@@ -20,6 +20,13 @@ import {ImageThumbnail} from "../../components/UI/Image/ImageThumbnail";
 
 const Container = styled.div`
   width: 100%;
+`;
+
+const DragWrapper = styled.div`
+  display: flex;
+  width: 56px;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const ActionContainer = styled.div`
@@ -37,8 +44,8 @@ const Multiple: FC<IMultipleCreate> = () => {
     const { albums } = useTypedSelector(state => state.album);
     const { artists } = useTypedSelector(state => state.artist);
     const [fileList, setFileList] = useState<IUploaderFile[]>([]);
-    const [createTrack, { }] = useCreateTrackMutation();
-    const { enqueueSnackbar } = useSnackbar()
+    const [createTrack, {}] = useCreateTrackMutation();
+    const { enqueueSnackbar } = useSnackbar();
 
     useGetAllArtistsQuery();
     useGetAllAlbumsQuery();
@@ -56,35 +63,37 @@ const Multiple: FC<IMultipleCreate> = () => {
             Array.from(files).forEach(file => {
                 const isInFilelist = fileList.find(item => item.audio.name === file.name);
                 if (Boolean(isInFilelist)) {
-                    enqueueSnackbar('Some songs are already added to the list', {variant: "warning"})
+                    enqueueSnackbar("Some songs are already added to the list", { variant: "warning" });
                     return;
                 }
-                    mmb.parseBlob(file).then(res => {
-                            setFileList((prevState) => [...prevState, {
-                                    audio: file,
-                                    picture: null,
-                                    year: res.common.year,
-                                    label: res.common.label,
-                                    genre: res.common.genre,
-                                    duration: res.format.duration,
-                                    posInAlbum: res.common.track.no,
-                                    albumNameFromTag: res.common.album,
-                                    artistNameFromTag: res.common.artist,
-                                    name: res.common.title ? res.common.title : file.name,
-                                    artist: getArtistByName(res.common.artist),
-                                    album: getAlbumByNameAndArtist(
-                                        res.common.album,
-                                        getArtistByName(res.common.artist)),
-                                }]
-                            );
-                        }
-                    );
+                mmb.parseBlob(file).then(res => {
+                        setFileList((prevState) => [...prevState, {
+                                audio: file,
+                                picture: null,
+                                year: res.common.year,
+                                label: res.common.label,
+                                genre: res.common.genre,
+                                duration: res.format.duration,
+                                posInAlbum: res.common.track.no,
+                                albumNameFromTag: res.common.album,
+                                artistNameFromTag: res.common.artist,
+                                name: res.common.title ? res.common.title : file.name,
+                                artist: getArtistByName(res.common.artist),
+                                album: getAlbumByNameAndArtist(
+                                    res.common.album,
+                                    getArtistByName(res.common.artist)),
+                            }]
+                        );
+                    }
+                );
             });
     };
 
     const handleItemChange = (updated: IUploaderFile[][number]) => {
+        console.log(updated);
         let updatedList = fileList.map(item => {
             if (item.audio == updated.audio) {
+                console.log(updated);
                 return updated;
             }
             return item;
@@ -140,13 +149,15 @@ const Multiple: FC<IMultipleCreate> = () => {
     return (
         <MainLayout>
             {Boolean(fileList?.length) &&
-				<DragContainer setFiles={handleAllPicturesSetter}
-							   accept={"audio"}
-							   styles={{ width: "300px", height: "56px", margin: "0 5px 15px 0", padding: "15px" }}
-				>
-					<AddAPhoto color={"primary"} sx={{ marginRight: "10px" }}/> Drag'n'Drop to set picture to all songs
-					in the list
-				</DragContainer>
+				<DragWrapper>
+					<DragContainer setFiles={handleAllPicturesSetter}
+								   accept={"audio"}
+								   styles={{ width: "56px", height: "56px", margin: "0 5px 15px 0", padding: "15px" }}
+					>
+						<AddAPhoto color={"primary"}/>
+					</DragContainer>
+                    <KeyboardDoubleArrowDown color={"action"}/>
+				</DragWrapper>
             }
             <ImageThumbnail source={""}/>
             <Container>
