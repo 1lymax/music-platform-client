@@ -1,5 +1,6 @@
 import {PlayerState} from "../../types/player";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {APP_HYDRATE} from "../index";
 
 
 const initialState: PlayerState = {
@@ -15,7 +16,6 @@ export const playerSlice = createSlice({
     name: 'player',
     initialState,
     reducers: {
-
         playTrack: (state) => {
             state.pause = false
         },
@@ -40,15 +40,17 @@ export const playerSlice = createSlice({
         },
     },
 
-    // extraReducers (builder) {
-    //     builder
-    //         .addCase(changeTrack)
-    // }
-
-    // extraReducers(builder) {
-    //     builder
-    //         .addCase(playlistSlice.reducer.)
-    // })
+    extraReducers: (builder) => {
+        builder
+            .addCase(
+                APP_HYDRATE, (state, action) => {
+                    //console.log('HYDRATE player', state, action.payload);
+                    return {
+                        ...state,
+                        ...action.payload.player,
+                    };
+                })
+    },
 
     // extraReducers: {
     //     [HYDRATE]: (state, action) => {

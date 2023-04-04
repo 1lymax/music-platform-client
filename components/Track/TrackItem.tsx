@@ -7,6 +7,7 @@ import {ITrack} from "../../types/track";
 import convertHMS from "../../utils/convertHMS";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {usePlayerActions, usePlaylistActions} from "../../hooks/dispatch";
+import TrackItemMenu from "./TrackItemMenu";
 
 interface TrackItemProps {
     track: ITrack;
@@ -73,7 +74,7 @@ const TrackItem: FC<TrackItemProps> = ({ track }) => {
             </TrackWrapper>
             {active?.track?._id === track._id && <div>{convertHMS(currentTime)} / {convertHMS(duration)}</div>
             }
-            {/*<TrackItemMenu/>*/}
+            <TrackItemMenu track={track}/>
             {/*<IconButton style={{marginLeft: 'auto'}} onClick={(e) => addToPlaylist(e)}>*/}
             {/*    <AddCircleOutlined/>*/}
             {/*</IconButton>*/}

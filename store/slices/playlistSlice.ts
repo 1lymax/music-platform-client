@@ -64,6 +64,7 @@ export const playlistSlice = createSlice({
         builder
             .addCase(
                 APP_HYDRATE, (state, action) => {
+                    //console.log('HYDRATE playlist', state, action.payload);
                     return {
                         ...state,
                         ...action.payload.playlist,
