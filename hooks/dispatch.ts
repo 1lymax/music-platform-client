@@ -7,6 +7,7 @@ import {artistActionCreators} from "../store/slices/artistSlice";
 import {playerActionCreators} from "../store/slices/playerSlice";
 import {playlistActionCreators} from "../store/slices/playlistSlice";
 import {uploaderActionCreators} from "../store/slices/uploaderSlice";
+import {genreActionCreators} from "../store/slices/genreSlice";
 
 
 export const useArtistActions = () => {
@@ -42,4 +43,9 @@ export const useUploaderActions = () => {
 export const useUserActions = () => {
     const dispatch = useDispatch();
     return bindActionCreators(userActionCreators, dispatch);
+};
+
+export const useGenreActions = () => {
+    const dispatch = useDispatch();
+    return bindActionCreators(genreActionCreators, dispatch);
 };

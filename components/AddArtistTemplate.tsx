@@ -25,7 +25,7 @@ const Step = styled.div`
 `;
 
 /* eslint-disable react/display-name */
-const AddArtist: FC<AddArtistProps> = forwardRef((props, ref) => {
+const AddArtistTemplate: FC<AddArtistProps> = forwardRef((props, ref) => {
     const { setOpen, defaultValue, onUpdate } = props;
     const name = useInput(defaultValue);
     const [image, setImage] = useState<any>();
@@ -69,4 +69,4 @@ const AddArtist: FC<AddArtistProps> = forwardRef((props, ref) => {
     );
 });
 
-export default AddArtist;
+export default AddArtistTemplate;

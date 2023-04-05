@@ -1,5 +1,6 @@
 import {IArtist} from "./artist";
 import {IAlbum} from "./album";
+import {IGenre} from "./genre";
 
 export interface IUploaderState {
     files: IUploaderFile[]
@@ -15,7 +16,8 @@ export interface IUploaderFile {
     album: IAlbum | undefined,
     artist: IArtist | undefined,
     label: string[] | undefined,
-    genre: string[] | undefined,
+    genre: (IGenre | null)[] | null,
+    genreFromTag: string[] | undefined,
     duration: number | undefined,
     artistNameFromTag: string | undefined,
     albumNameFromTag: string | undefined,

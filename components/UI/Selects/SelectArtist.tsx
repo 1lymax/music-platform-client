@@ -5,7 +5,7 @@ import {FC, useState} from "react";
 import styled from "styled-components";
 
 import AppDialog from "../AppDialog";
-import AddArtist from "../../AddArtist";
+import AddArtistTemplate from "../../AddArtistTemplate";
 import SelectTemplate from "./SelectTemplate";
 import {IArtist} from "../../../types/artist";
 import AddButtonIcon from "../Buttons/AddButtonIcon";
@@ -49,19 +49,16 @@ export const SelectArtist: FC<ISelectArtist> = (props) => {
             {!defaultValue && showAddNewInfo &&
 				<WarningCell>
 					<Typography variant={"body2"}>
-						<div>{artistName} Artist not found.</div>
-						<div>You can <Link component={"button"}
+						<div>Add <Link component={"button"}
 										   onClick={() => setArtistDialog(true)}
 										   sx={{ textDecorationStyle: "dashed" }}
-						>
-							add new.
-						</Link>
+						>{artistName}</Link>
 						</div>
 					</Typography>
 				</WarningCell>
             }
             <AppDialog open={artistDialog} setOpen={setArtistDialog} title={"Add new artist"}>
-                <AddArtist setOpen={setArtistDialog} defaultValue={artistName} onUpdate={setArtist}/>
+                <AddArtistTemplate setOpen={setArtistDialog} defaultValue={artistName} onUpdate={setArtist}/>
             </AppDialog>
         </Container>
     );

@@ -2,15 +2,15 @@
 import * as React from "react";
 import styled from "styled-components";
 import {FC, useEffect, useState} from "react";
+import {Link, Typography} from "@mui/material";
 
 import AppDialog from "../AppDialog";
-import AddAlbum from "../../AddAlbum";
+import AddAlbumTemplate from "../../AddAlbumTemplate";
 import {IAlbum} from "../../../types/album";
 import {IArtist} from "../../../types/artist";
 import SelectTemplate from "./SelectTemplate";
 import AddButtonIcon from "../Buttons/AddButtonIcon";
 import {useSearchAlbumQuery} from "../../../store/api/album.api";
-import {Link, Typography} from "@mui/material";
 
 const Container = styled.div`
   width: 100%;
@@ -29,11 +29,11 @@ const WarningCell = styled.div`
 `;
 
 interface ISelectAlbum {
+    albumName?: string
+    showAddNewInfo?: boolean,
+    artist: IArtist | undefined;
     setAlbum: (value: IAlbum) => void;
     defaultValue: IAlbum | undefined;
-    artist: IArtist | undefined;
-    showAddNewInfo?: boolean,
-    albumName?: string
 }
 
 export const SelectAlbum: FC<ISelectAlbum> = (props) => {
@@ -43,15 +43,11 @@ export const SelectAlbum: FC<ISelectAlbum> = (props) => {
     const { data, refetch } = useSearchAlbumQuery({ artist: artist?._id }, {});
     const [albumDialog, setAlbumDialog] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (data)
-            setAlbums(data);
-    }, [data]);
-
     const getAlbumName = () => {
-        if (artist)
+
+        if (artist) {
             return artist.name + "'s albums (" + albums?.length + ")";
-        else
+        } else
             return "Album (Select artist first)";
     };
 
@@ -59,6 +55,11 @@ export const SelectAlbum: FC<ISelectAlbum> = (props) => {
         refetch();
         setAlbum(album);
     };
+
+    useEffect(() => {
+        if (data)
+            setAlbums(data);
+    }, [data]);
 
     return (
         <Container>
@@ -71,20 +72,19 @@ export const SelectAlbum: FC<ISelectAlbum> = (props) => {
             {!defaultValue && showAddNewInfo &&
 				<WarningCell>
 					<Typography variant={"body2"} sx={{ textDecorationStyle: "dashed" }}>
-						<div><Link component={"button"}
+						<div>Add <Link component={"button"}
 								   variant={"body2"}
 								   onClick={() => setAlbumDialog(true)}
 								   sx={{ textDecorationStyle: "dashed" }}
-						>
-							Add album
-						</Link> {albumName}</div>
+						> {albumName}
+						</Link> album</div>
 
 					</Typography>
 				</WarningCell>
             }
             <AppDialog open={albumDialog} setOpen={setAlbumDialog} title={"Add new album"}>
-                <AddAlbum setOpen={setAlbumDialog} defaultValue={albumName} defaultArtist={artist}
-                          onUpdate={handleAddNew}/>
+                <AddAlbumTemplate setOpen={setAlbumDialog} defaultValue={albumName} defaultArtist={artist}
+                                  onUpdate={handleAddNew}/>
             </AppDialog>
         </Container>
     );

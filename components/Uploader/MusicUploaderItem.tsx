@@ -1,15 +1,20 @@
 // @flow
 import * as React from "react";
+import {FC} from "react";
 import styled from "styled-components";
 import {TextField} from "@mui/material";
 import {Delete} from "@mui/icons-material";
-import {FC} from "react";
 import IconButton from "@mui/material/IconButton";
 import {IUploaderFile} from "../../types/uploader";
 import {SelectAlbum} from "../UI/Selects/SelectAlbum";
 import {UploaderContainer} from "./UploaderContainer";
+import {SelectGenre} from "../UI/Selects/SelectGenre";
 import {SelectArtist} from "../UI/Selects/SelectArtist";
+import {getEntityById} from "../../helpers/getEntityById";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {getEntityByName} from "../../helpers/getEntityByName";
+import {getEntitiesByArrayId} from "../../helpers/getEntitiesByArrayId";
+import {getEntitiesByArrayNames} from "../../helpers/getEntitiesByArrayNames";
 
 const Container = styled.div`
   display: grid;
@@ -49,22 +54,7 @@ interface IUploaderItem {
 export const MusicUploaderItem: FC<IUploaderItem> = ({ file, onUpdate, onRemove }) => {
     const { artists } = useTypedSelector(state => state.artist);
     const { albums } = useTypedSelector(state => state.album);
-
-    const getArtistByName = (name: string | undefined) => {
-        return artists.find(artist => artist.name.toLowerCase() === name?.toLowerCase());
-    };
-
-    const getArtistById = (id: string | undefined) => {
-        return artists.find(artist => artist._id === id);
-    };
-
-    const getAlbumById = (id: string | undefined) => {
-        return albums.find(album => album._id === id);
-    };
-
-    const getAlbumByName = (name: string | undefined) => {
-        return albums.find(album => album.name.toLowerCase() === name?.toLowerCase());
-    };
+    const { genres } = useTypedSelector(state => state.genre);
 
     const handleUploadedImage = (files: (FileList | null)) => {
         onUpdate({ ...file, picture: files ? files[0] : null });
@@ -92,18 +82,18 @@ export const MusicUploaderItem: FC<IUploaderItem> = ({ file, onUpdate, onRemove 
             <Cell>
                 <SelectArtist showAddNewInfo
                               artistName={file.artistNameFromTag}
-                              defaultValue={getArtistByName(file.artist?.name)}
+                              defaultValue={getEntityByName(file.artist?.name, artists)}
                               setArtist={(artist) => {
-                                  onUpdate({ ...file, artist: getArtistById(artist?._id) });
+                                  onUpdate({ ...file, artist: getEntityById(artist?._id, artists) });
                               }}/>
             </Cell>
             <Cell>
                 <SelectAlbum showAddNewInfo
                              artist={file.artist}
                              albumName={file.albumNameFromTag}
-                             defaultValue={getAlbumByName(file.album?.name)}
+                             defaultValue={getEntityByName(file.album?.name, albums)}
                              setAlbum={(album) =>
-                                 onUpdate({ ...file, album: getAlbumById(album?._id) })}/>
+                                 onUpdate({ ...file, album: getEntityById(album?._id, albums) })}/>
 
             </Cell>
             <Cell>
@@ -132,6 +122,14 @@ export const MusicUploaderItem: FC<IUploaderItem> = ({ file, onUpdate, onRemove 
                     onChange={(e) => onUpdate({ ...file, posInAlbum: parseInt(e.target.value) })}
                 />
             </TwiceCell>
+            <Cell>
+                <SelectGenre showAddNewInfo
+                             genreNames={file.genreFromTag}
+                             defaultValue={getEntitiesByArrayNames(file.genreFromTag, genres)}
+                             setGenres={(genre) => {
+                                 onUpdate({ ...file, genre: getEntitiesByArrayId(genre, genres) });
+                             }}/>
+            </Cell>
 
 
         </Container>

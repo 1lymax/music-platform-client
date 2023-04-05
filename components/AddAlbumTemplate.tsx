@@ -4,7 +4,7 @@ import styled from "styled-components";
 import {Add} from "@mui/icons-material";
 import {TextField} from "@mui/material";
 
-import AddArtist from "./AddArtist";
+import AddArtistTemplate from "./AddArtistTemplate";
 import {IAlbum} from "../types/album";
 import AppDialog from "./UI/AppDialog";
 import {IArtist} from "../types/artist";
@@ -38,7 +38,7 @@ const SelectContainer = styled.div`
   align-items: center;
 `;
 /* eslint-disable react/display-name */
-const AddAlbum: FC<AddAlbumProps> = forwardRef((props, ref) => {
+const AddAlbumTemplate: FC<AddAlbumProps> = forwardRef((props, ref) => {
     const { setOpen, onUpdate, defaultValue, defaultArtist } = props;
     const name = useInput(defaultValue);
     const year = useInput('');
@@ -99,10 +99,10 @@ const AddAlbum: FC<AddAlbumProps> = forwardRef((props, ref) => {
                 <UploaderContainer setFiles={setImage} zoomButton={false} width="200px" height="200px"/>
             </Step>
             <AppDialog open={artistDialog} setOpen={setArtistDialog} title={"Add new artist"}>
-                <AddArtist setOpen={setArtistDialog}/>
+                <AddArtistTemplate setOpen={setArtistDialog}/>
             </AppDialog>
         </>
     );
 });
 
-export default AddAlbum;
+export default AddAlbumTemplate;

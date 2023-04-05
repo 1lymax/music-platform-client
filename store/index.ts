@@ -12,6 +12,8 @@ import {playerSlice} from "./slices/playerSlice";
 import {artistSlice} from "./slices/artistSlice";
 import {playlistSlice} from "./slices/playlistSlice";
 import {uploaderSlice} from "./slices/uploaderSlice";
+import {genreSlice} from "./slices/genreSlice";
+import {genreApi} from "./api/genre.api";
 
 export const makeStore = () =>
     configureStore({
@@ -23,12 +25,14 @@ export const makeStore = () =>
             [userSlice.name]: userSlice.reducer,
             [playlistSlice.name]: playlistSlice.reducer,
             [uploaderSlice.name]: uploaderSlice.reducer,
+            [genreSlice.name]: genreSlice.reducer,
 
             [trackApi.reducerPath]: trackApi.reducer,
             [artistApi.reducerPath]: artistApi.reducer,
             [albumApi.reducerPath]: albumApi.reducer,
             [authApi.reducerPath]: authApi.reducer,
             [playlistApi.reducerPath]: playlistApi.reducer,
+            [genreApi.reducerPath]: genreApi.reducer,
         },
         middleware: (getDefaultMiddleware) =>
             getDefaultMiddleware()
@@ -36,7 +40,8 @@ export const makeStore = () =>
                 .concat(artistApi.middleware)
                 .concat(albumApi.middleware)
                 .concat(playlistApi.middleware)
-                .concat(authApi.middleware),
+                .concat(authApi.middleware)
+                .concat(genreApi.middleware),
         devTools: true,
     });
 

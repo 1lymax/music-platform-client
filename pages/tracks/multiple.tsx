@@ -5,16 +5,18 @@ import {Button} from "@mui/material";
 import {useSnackbar} from "notistack";
 import styled from "styled-components";
 import * as mmb from "music-metadata-browser";
-import {IArtist} from "../../types/artist";
 import MainLayout from "../../layouts/MainLayout";
 import {IUploaderFile} from "../../types/uploader";
+import {getEntityByName} from "../../helpers/getEntityByName";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {getEntitiesByArrayNames} from "../../helpers/getEntitiesByArrayNames";
 import {useGetAllAlbumsQuery} from "../../store/api/album.api";
 import {useGetAllArtistsQuery} from "../../store/api/artist.api";
 import {useCreateTrackMutation} from "../../store/api/track.api";
 import DragContainer from "../../components/Uploader/DragContainer";
 import {MusicUploaderItem} from "../../components/Uploader/MusicUploaderItem";
 import {UploaderContainer} from "../../components/Uploader/UploaderContainer";
+import {getEntityByNameAndForeignEntity} from "../../helpers/getEntityByNameAndForeignEntity";
 
 
 const Container = styled.div`
@@ -33,22 +35,15 @@ interface IMultipleCreate {
 }
 
 const Multiple: FC<IMultipleCreate> = () => {
+    const [fileList, setFileList] = useState<IUploaderFile[]>([]);
     const { albums } = useTypedSelector(state => state.album);
     const { artists } = useTypedSelector(state => state.artist);
-    const [fileList, setFileList] = useState<IUploaderFile[]>([]);
+    const { genres } = useTypedSelector(state => state.genre);
     const [createTrack, {}] = useCreateTrackMutation();
     const { enqueueSnackbar } = useSnackbar();
 
     useGetAllArtistsQuery();
     useGetAllAlbumsQuery();
-
-    const getArtistByName = (name: string | undefined) => {
-        return artists.find(artist => artist.name.toLowerCase() === name?.toLowerCase());
-    };
-
-    const getAlbumByNameAndArtist = (name: string | undefined, artist: IArtist | undefined) => {
-        return albums.find(album => album.name.toLowerCase() === name?.toLowerCase() && album.artist === artist?._id);
-    };
 
     const handleDragnDropFiles = (files: FileList | null) => {
         if (files)
@@ -64,16 +59,18 @@ const Multiple: FC<IMultipleCreate> = () => {
                                 picture: null,
                                 year: res.common.year,
                                 label: res.common.label,
-                                genre: res.common.genre,
+                                genre: getEntitiesByArrayNames(res.common.genre, genres),
+                                genreFromTag: res.common.genre,
                                 duration: res.format.duration,
                                 posInAlbum: res.common.track.no,
                                 albumNameFromTag: res.common.album,
                                 artistNameFromTag: res.common.artist,
                                 name: res.common.title ? res.common.title : file.name,
-                                artist: getArtistByName(res.common.artist),
-                                album: getAlbumByNameAndArtist(
+                                artist: getEntityByName(res.common.artist, artists),
+                                album: getEntityByNameAndForeignEntity(
                                     res.common.album,
-                                    getArtistByName(res.common.artist)),
+                                    getEntityByName(res.common.artist, artists),
+                                    albums),
                             }]
                         );
                     }
@@ -82,10 +79,8 @@ const Multiple: FC<IMultipleCreate> = () => {
     };
 
     const handleItemChange = (updated: IUploaderFile[][number]) => {
-        console.log(updated);
         let updatedList = fileList.map(item => {
             if (item.audio == updated.audio) {
-                console.log(updated);
                 return updated;
             }
             return item;
@@ -116,7 +111,6 @@ const Multiple: FC<IMultipleCreate> = () => {
         const updatedList = fileList.map(file => {
             return { ...file, picture: files[0] };
         });
-        console.log(updatedList);
         setFileList(updatedList);
     };
 
@@ -124,7 +118,7 @@ const Multiple: FC<IMultipleCreate> = () => {
     useEffect(() => {
         // updates select boxes when artists state changes
         let updatedList = fileList.map(item => {
-            return { ...item, artist: getArtistByName(item.artistNameFromTag) };
+            return { ...item, artist: getEntityByName(item.artistNameFromTag, artists) };
         });
         setFileList(updatedList);
     }, [artists]);
@@ -133,21 +127,25 @@ const Multiple: FC<IMultipleCreate> = () => {
     useEffect(() => {
         // updates select boxes when album state changes
         let updatedList = fileList.map(item => {
-            return { ...item, album: getAlbumByNameAndArtist(item.albumNameFromTag, item.artist) };
+            return { ...item, album: getEntityByNameAndForeignEntity(item.albumNameFromTag, item.artist, albums) };
         });
         setFileList(updatedList);
     }, [albums]);
 
 
+    useEffect(() => {
+        console.log(fileList);
+    }, [fileList]);
+
     return (
         <MainLayout>
             {Boolean(fileList?.length) &&
 				<UploaderContainer width="70px"
-                                   height="70px"
-                                   zoomButton
-                                   isPreviewVisible={false}
-                                   setFiles={handleAllPicturesSetter}
-                />
+								   height="70px"
+								   zoomButton
+								   isPreviewVisible={false}
+								   setFiles={handleAllPicturesSetter}
+				/>
             }
             <Container>
                 {fileList && fileList.map((file) => (
