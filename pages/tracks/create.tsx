@@ -1,166 +1,168 @@
+// @flow
+import * as React from "react";
+import {useEffect, useState} from "react";
+import {Button} from "@mui/material";
+import {useSnackbar} from "notistack";
 import styled from "styled-components";
-import React, {FC, useEffect, useState} from 'react';
-
-import {useRouter} from "next/router";
-import {Add} from "@mui/icons-material";
-import {IAlbum} from "../../types/album";
-import {IArtist} from "../../types/artist";
-import {useInput} from "../../hooks/useInput";
-import {Button, TextField} from "@mui/material";
-import AddAlbum from "../../components/AddAlbum";
+import * as mmb from "music-metadata-browser";
 import MainLayout from "../../layouts/MainLayout";
-import AppDialog from "../../components/UI/AppDialog";
-import AddArtist from "../../components/AddArtist";
-import AddButton from "../../components/UI/Buttons/AddButton";
-import SelectTemplate from "../../components/UI/Selects/SelectTemplate";
-import StepWrapper from "../../components/StepWrapper";
-import FileUploader from "../../components/FileUploader";
-import ImagePreview from "../../components/UI/ImagePreview";
-import AudioPreview from "../../components/UI/AudioPreview";
-import {useSearchAlbumQuery} from "../../store/api/album.api";
+import {IUploaderFile} from "../../types/uploader";
+import {getEntityByName} from "../../helpers/getEntityByName";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useGetAllAlbumsQuery} from "../../store/api/album.api";
 import {useGetAllArtistsQuery} from "../../store/api/artist.api";
 import {useCreateTrackMutation} from "../../store/api/track.api";
-import {useSuccessMessage} from "../../hooks/useSuccessMessage";
-import {useErrorMessage} from "../../hooks/useErrorMessage";
+import DragContainer from "../../components/Uploader/DragContainer";
+import {setValueOrEntityId} from "../../helpers/setValueOrEntityId";
+import {MusicUploaderItem} from "../../components/Uploader/MusicUploaderItem";
+import {UploaderContainer} from "../../components/Uploader/UploaderContainer";
+import {getEntitiesByArrayEntities} from "../../helpers/getEntitiesByArrayEntities";
+import {getEntityByNameAndForeignEntity} from "../../helpers/getEntityByNameAndForeignEntity";
 
 
-const Step = styled.div`
+const Container = styled.div`
+  width: 100%;
+`;
+
+const ActionContainer = styled.div`
+  width: 50%;
   display: flex;
   flex-direction: column;
-  height: 100%;
-`
-
-const SelectContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-`
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 600px;
   align-self: center;
-`
+`;
 
-const Create: FC = () => {
-    const router = useRouter()
-    const [audio, setAudio] = useState<any>();
-    const [album, setAlbum] = useState<IAlbum>();
-    const [picture, setPicture] = useState<any>();
-    const [artist, setArtist] = useState<IArtist>();
-    const [activeStep, setActiveStep] = useState<number>(0);
-    const [artistDialog, setArtistDialog] = useState<boolean>(false);
-    const [albumDialog, setAlbumDialog] = useState<boolean>(false);
 
-    const name = useInput('', 'Track title')
-    const text = useInput('', 'Track lyrics')
+const Create = () => {
+    const [fileList, setFileList] = useState<IUploaderFile[]>([]);
+    const { albums } = useTypedSelector(state => state.album);
+    const { artists } = useTypedSelector(state => state.artist);
+    const { genres } = useTypedSelector(state => state.genre);
+    const [createTrack, {}] = useCreateTrackMutation();
+    const { enqueueSnackbar } = useSnackbar();
 
-    const {artists} = useTypedSelector(state => state.artist)
-    const {albums} = useTypedSelector(state => state.album)
+    useGetAllArtistsQuery();
+    useGetAllAlbumsQuery();
 
-    useGetAllArtistsQuery()
-    useSearchAlbumQuery({artist: artist?._id})
+    const handleDragnDropFiles = (files: FileList | null) => {
+        if (files)
+            Array.from(files).forEach(file => {
+                const isInFilelist = fileList.find(item => item.audio.name === file.name);
+                if (Boolean(isInFilelist)) {
+                    enqueueSnackbar("Some songs are already added to the list", { variant: "warning" });
+                    return;
+                }
+                mmb.parseBlob(file).then(res => {
+                        setFileList((prevState) => [...prevState, {
+                                audio: file,
+                                picture: null,
+                                year: res.common.year,
+                                label: res.common.label,
+                                genre: getEntitiesByArrayEntities(res.common.genre, genres),
+                                //genre: getEntitiesByArrayEntities(['Rock', 'Blues', 'Hard Rock'], genres),
+                                genreFromTag: res.common.genre,
+                                duration: res.format.duration,
+                                posInAlbum: res.common.track.no,
+                                albumNameFromTag: res.common.album,
+                                artistNameFromTag: res.common.artist,
+                                name: res.common.title ? res.common.title : file.name,
+                                artist: getEntityByName(res.common.artist, artists),
+                                album: getEntityByNameAndForeignEntity(
+                                    res.common.album,
+                                    getEntityByName(res.common.artist, artists),
+                                    albums),
+                            }]
+                        );
+                    }
+                );
+            });
+    };
 
-    const [createTrack, {isSuccess, error, }] = useCreateTrackMutation()
+    const handleItemChange = (updated: IUploaderFile[][number]) => {
+        let updatedList = fileList.map(item => {
+            if (item.audio == updated.audio) {
+                return updated;
+            }
+            return item;
+        });
+        setFileList(updatedList);
+    };
 
-    useSuccessMessage('Track successfully added', isSuccess)
-    useErrorMessage('Add track error', error)
+    const handleItemRemove = (file: IUploaderFile) => {
+        setFileList(prevState => prevState.filter(item => item.name !== file.name));
+    };
+
+    const handleUploadToServer = async () => {
+        const form = new FormData();
+        fileList.map((file, index) => {
+            for (let [key, val] of Object.entries(file)) {
+                if (val && ["artistNameFromTag", "albumNameFromTag", "genreFromTag"].indexOf(key) < 0)
+                    form.append(`${index}.${key}`, setValueOrEntityId(val));
+            }
+        });
+        //form.forEach((key, val) => console.log(key, val));
+        createTrack(form);
+    };
+
+    const handleAllPicturesSetter = (files: (FileList | null)) => {
+        // updates all fileList's pictures
+        if (!files) return null;
+        const updatedList = fileList.map(file => {
+            return { ...file, picture: files[0] };
+        });
+        setFileList(updatedList);
+    };
+
 
     useEffect(() => {
-        if (isSuccess)
-            router.push('/tracks')
-        //@ts-ignore
-    }, [isSuccess]);
+        // updates select boxes when artists state changes
+        let updatedList = fileList.map(item => {
+            return { ...item, artist: getEntityByName(item.artistNameFromTag, artists) };
+        });
+        setFileList(updatedList);
+    }, [artists]);
 
-    const back = () => {
-        setActiveStep(prevState => prevState - 1)
-    }
 
-    const next = () => {
-        if (activeStep < 2) {
-            setActiveStep(prevState => prevState + 1)
-        } else {
-            const form = new FormData()
-            form.append("name", name.componentProps.value)
-            form.append("text", text.componentProps.value)
-            form.append("picture", picture)
-            form.append("audio", audio)
-            if (album?._id) form.append("album", album._id)
-            if (artist?._id) form.append("artist", artist._id)
-            form.forEach((val, item) => console.log(item, val))
-            createTrack(form)
-        }
-    }
+    useEffect(() => {
+        // updates select boxes when album state changes
+        let updatedList = fileList.map(item => {
+            return { ...item, album: getEntityByNameAndForeignEntity(item.albumNameFromTag, item.artist, albums) };
+        });
+        setFileList(updatedList);
+    }, [albums]);
 
-    const albumName = () => {
-        if (artist)
-            return "Album (" + albums.length + ")"
-        else
-            return 'Select artist first'
-    }
+
+    useEffect(() => {
+        //console.log(fileList);
+    }, [fileList]);
 
     return (
         <MainLayout>
-            <StepWrapper activeStep={activeStep}>
-                {activeStep === 0 &&
-					<Step>
-						<TextField
-                            {...name.componentProps}
-							sx={{marginBottom: '15px'}}
-						/>
-						<SelectContainer>
-							<SelectTemplate label={'Artist...'} onChange={setArtist} options={artists}/>
-							<AddButton icon={<Add/>}
-                                       onClick={() => setArtistDialog(true)}>Add...</AddButton>
-						</SelectContainer>
-						<SelectContainer>
-							<SelectTemplate label={albumName()} onChange={setAlbum} options={albums}/>
-							<AddButton icon={<Add/>}
-                                       onClick={() => setAlbumDialog(true)}>Add...</AddButton>
-						</SelectContainer>
-                        <TextField
-                            {...text.componentProps}
-							rows={4}
-							multiline
-							sx={{marginBottom: '10px'}}
-						/>
-                    </Step>
-                }
-                {activeStep === 1 &&
-					<Step>
-						Upload picture
-						<FileUploader setFile={setPicture} accept="image/*">
-                            {picture &&
-								<ImagePreview file={picture}/>
-                            }
-						</FileUploader>
-
-					</Step>
-                }
-                {activeStep === 2 &&
-					<Step>
-						Upload audio track
-						<FileUploader setFile={setAudio} accept="audio/*">
-                            {audio &&
-								<AudioPreview file={audio}/>
-                            }
-						</FileUploader>
-                    </Step>
-                }
-            </StepWrapper>
-            <ButtonContainer>
-                <Button variant={"contained"} disabled={activeStep === 0} onClick={back}>Back</Button>
-                <Button variant={"contained"} onClick={next}>{activeStep === 2 ? 'Save' : 'Next'}</Button>
-            </ButtonContainer>
-            <AppDialog open={artistDialog} setOpen={setArtistDialog} title={'Add new artist'}>
-                <AddArtist setOpen={setArtistDialog}/>
-            </AppDialog>
-            <AppDialog open={albumDialog} setOpen={setAlbumDialog} title={'Add new album'}>
-                <AddAlbum setOpen={setAlbumDialog}/>
-            </AppDialog>
+            {Boolean(fileList?.length) &&
+				<UploaderContainer width="70px"
+								   height="70px"
+								   zoomButton
+								   isPreviewVisible={false}
+								   setFiles={handleAllPicturesSetter}
+				/>
+            }
+            <Container>
+                {fileList && fileList.map((file) => (
+                    <MusicUploaderItem file={file}
+                                       key={file.audio.name + file.duration}
+                                       onUpdate={handleItemChange}
+                                       onRemove={handleItemRemove}/>
+                ))}
+            </Container>
+            <ActionContainer>
+                <DragContainer setFiles={handleDragnDropFiles}
+                               accept={"audio"}
+                >Drag&Drop files here or browse...</DragContainer>
+                <Button variant={"contained"}
+                        onClick={handleUploadToServer}
+                        disabled={!Boolean(fileList?.length)}>
+                    Upload
+                </Button>
+            </ActionContainer>
         </MainLayout>
     );
 };

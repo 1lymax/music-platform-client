@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React from "react";
 import {Button} from "@mui/material";
 import {useRouter} from "next/router";
 import styled from "styled-components";
@@ -9,24 +9,19 @@ import MainLayout from "../../layouts/MainLayout";
 import TrackList from "../../components/Track/TrackList";
 import {getAllTracks, trackApi} from "../../store/api/track.api";
 
-interface IndexProps {
-    tracks: ITrack[];
-    status: string;
-}
-
 const Container = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: row;
   align-items: center;
 `
+
 const Card = styled.div`
   width: 900px;
   border: 1px solid lightgray;
   border-radius: 5px;
   box-shadow: 0 2px 2px lightgray;
 `
-
 const CardContent = styled.div`
   display: flex;
   justify-content: space-between;
@@ -37,7 +32,12 @@ const CardContent = styled.div`
 const Title = styled.h1`
 `
 
-const Index: FC<IndexProps> = ({tracks}) => {
+interface Props {
+    tracks: ITrack[];
+    status: string;
+}
+
+const Index = ({tracks}: Props) => {
     const router = useRouter()
 
     return (
