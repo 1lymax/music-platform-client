@@ -1,7 +1,4 @@
-export interface IGenre {
-    _id: string;
-    name: string;
-}
+export type IGenre = string
 
 export interface IGenreState {
     genres: IGenre[]

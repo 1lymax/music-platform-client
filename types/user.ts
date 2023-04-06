@@ -7,6 +7,11 @@ export interface IUser {
 }
 
 export interface UserState {
-    user: IUser
+    user: IUser;
+    dialogs: {
+        addNewAlbum: boolean;
+        addNewArtist: boolean;
+        addNewGenre: boolean;
+    }
 
 }

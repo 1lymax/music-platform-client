@@ -1,16 +1,6 @@
 import {IArtist} from "../types/artist";
 import {IAlbum} from "../types/album";
 
-// type T = IAlbum
-//
-// interface f<T, U> {
-//     (
-//         name: string | undefined,
-//         foreignEntity: U | undefined,
-//         entities: T[]
-//     ) : T
-// }
-
 export const getEntityByNameAndForeignEntity =
     <T extends IAlbum, U extends IArtist>(
         name: string | undefined,

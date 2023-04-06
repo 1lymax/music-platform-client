@@ -16,7 +16,7 @@ export interface IUploaderFile {
     album: IAlbum | undefined,
     artist: IArtist | undefined,
     label: string[] | undefined,
-    genre: (IGenre | null)[] | null,
+    genre: IGenre[] | null,
     genreFromTag: string[] | undefined,
     duration: number | undefined,
     artistNameFromTag: string | undefined,

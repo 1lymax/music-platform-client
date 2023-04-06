@@ -1,5 +1,5 @@
 import jwtDecode from "jwt-decode";
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {APP_HYDRATE} from "../index";
 import {authApi} from "../api/auth.api";
 import {IUser, UserState} from "../../types/user";
@@ -11,6 +11,11 @@ export const initialState: UserState = {
         name: '',
         email: '',
         picture: '',
+    },
+    dialogs: {
+        addNewAlbum: false,
+        addNewArtist: false,
+        addNewGenre: false,
     }
 }
 
@@ -22,6 +27,18 @@ export const userSlice = createSlice({
         setUser: (state, action) => {
             state.user = action.payload
         },
+        setDialogAddNewAlbum: (state, action:PayloadAction<boolean>) => {
+            state.dialogs.addNewAlbum = action.payload
+        },
+        setDialogAddNewArtist: (state, action:PayloadAction<boolean>) => {
+            state.dialogs.addNewArtist = action.payload
+        },
+        setDialogAddNewGenre: (state, action:PayloadAction<boolean>) => {
+            state.dialogs.addNewGenre = action.payload
+        }
+
+
+
     },
     extraReducers: builder => {
         builder

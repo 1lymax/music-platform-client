@@ -1,16 +1,18 @@
 // @flow
 import * as React from "react";
 import styled from "styled-components";
-import {FC, useEffect, useState} from "react";
-import {Link, Typography} from "@mui/material";
+import {useEffect, useState} from "react";
 
 import AppDialog from "../AppDialog";
-import AddAlbumTemplate from "../../AddAlbumTemplate";
 import {IAlbum} from "../../../types/album";
 import {IArtist} from "../../../types/artist";
 import SelectTemplate from "./SelectTemplate";
 import AddButtonIcon from "../Buttons/AddButtonIcon";
+import AddAlbumTemplate from "../../AddAlbumTemplate";
+import {useUserActions} from "../../../hooks/dispatch";
+import {SelectShowAddNewInfo} from "./SelectShowAddNewInfo";
 import {useSearchAlbumQuery} from "../../../store/api/album.api";
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
 
 const Container = styled.div`
   width: 100%;
@@ -24,11 +26,7 @@ const ButtonCell = styled.div`
   align-items: center;
 `;
 
-const WarningCell = styled.div`
-  margin: 0 5px;
-`;
-
-interface ISelectAlbum {
+interface Props {
     albumName?: string
     showAddNewInfo?: boolean,
     artist: IArtist | undefined;
@@ -36,15 +34,18 @@ interface ISelectAlbum {
     defaultValue: IAlbum | undefined;
 }
 
-export const SelectAlbum: FC<ISelectAlbum> = (props) => {
+export const SelectAlbum = (props: Props) => {
     const { setAlbum, artist, showAddNewInfo = false, albumName = "", defaultValue } = props;
+
+    const { setDialogAddNewAlbum } = useUserActions();
     const [albums, setAlbums] = useState<IAlbum[]>([]);
+    const { dialogs } = useTypedSelector(state => state.user);
+    const [valueToShowInAddInfo, setValueToShowInAddInfo] = useState<string>('');
+
 
     const { data, refetch } = useSearchAlbumQuery({ artist: artist?._id }, {});
-    const [albumDialog, setAlbumDialog] = useState<boolean>(false);
 
     const getAlbumName = () => {
-
         if (artist) {
             return artist.name + "'s albums (" + albums?.length + ")";
         } else
@@ -61,29 +62,28 @@ export const SelectAlbum: FC<ISelectAlbum> = (props) => {
             setAlbums(data);
     }, [data]);
 
+    useEffect(() => {
+        if (defaultValue)
+            setValueToShowInAddInfo(albumName !== defaultValue.name ? albumName : '');
+        else
+            setValueToShowInAddInfo(albumName)
+    }, [albumName, defaultValue]);
+
     return (
         <Container>
             <SelectTemplate label={getAlbumName()} defaultValue={defaultValue} onChange={setAlbum}
                             options={albums}/>
             <ButtonCell>
                 <AddButtonIcon //icon={<Add/>}
-                    onClick={() => setAlbumDialog(true)}></AddButtonIcon>
+                    onClick={() => setDialogAddNewAlbum(true)}></AddButtonIcon>
             </ButtonCell>
-            {!defaultValue && showAddNewInfo &&
-				<WarningCell>
-					<Typography variant={"body2"} sx={{ textDecorationStyle: "dashed" }}>
-						<div>Add <Link component={"button"}
-								   variant={"body2"}
-								   onClick={() => setAlbumDialog(true)}
-								   sx={{ textDecorationStyle: "dashed" }}
-						> {albumName}
-						</Link> album</div>
-
-					</Typography>
-				</WarningCell>
+            {showAddNewInfo &&
+				<SelectShowAddNewInfo valuesToShow={valueToShowInAddInfo}
+                                      callBackSetDialog={setDialogAddNewAlbum}
+                />
             }
-            <AppDialog open={albumDialog} setOpen={setAlbumDialog} title={"Add new album"}>
-                <AddAlbumTemplate setOpen={setAlbumDialog} defaultValue={albumName} defaultArtist={artist}
+            <AppDialog open={dialogs.addNewAlbum} setOpen={setDialogAddNewAlbum} title={"Add new album"}>
+                <AddAlbumTemplate setOpen={() => setDialogAddNewAlbum(true)} defaultValue={albumName} defaultArtist={artist}
                                   onUpdate={handleAddNew}/>
             </AppDialog>
         </Container>

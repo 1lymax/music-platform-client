@@ -48,6 +48,7 @@ const AddGenreTemplate: FC<AddGenreProps> = forwardRef((props, ref) => {
             const form = new FormData();
             form.append("name", name.componentProps.value);
             form.forEach((i,k)  => console.log(i, k));
+            //form.append("temp", ['sdsd', 'sere', {id: 0, name: 'dsfsd'}].join(','));
             createGenre(form);
         }
     }));

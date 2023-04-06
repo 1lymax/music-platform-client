@@ -1,9 +1,10 @@
-import {FC, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import {getEntityById} from "../../../helpers/getEntityById";
+import {isEmptyArray} from "../../../helpers/isEmptyArray";
 
-interface SelectBoxProps {
+interface Props {
     options: any[];
     label: string;
     defaultValue?: any;
@@ -12,17 +13,18 @@ interface SelectBoxProps {
 }
 
 
-const SelectTemplate: FC<SelectBoxProps> = ({ options, onChange, label, defaultValue = null, multiple }) => {
-    const [value, setValue] = useState<any>(null);
+const SelectTemplate = (props: Props) => {
+    const { options, onChange, label, defaultValue = null, multiple } = props;
+    const [value, setValue] = useState<any>(multiple ? [] : null);
 
 
     useEffect(() => {
-        const isEmptyArray = Array.isArray(defaultValue) && defaultValue.length === 0;
-        if (defaultValue && !isEmptyArray) {
+        if (defaultValue && !isEmptyArray(defaultValue)) {
             setValue(defaultValue);
         }
     }, [defaultValue]);
 
+    //console.log('options', options);
     return (
         <Autocomplete
             fullWidth
@@ -35,10 +37,11 @@ const SelectTemplate: FC<SelectBoxProps> = ({ options, onChange, label, defaultV
                 setValue(value);
                 onChange(value);
             }}
-            getOptionLabel={(option) => option.name ? option.name : ""}
+            getOptionLabel={(option) => option.name ? option.name : option}
             isOptionEqualToValue={(option, value) => {
+                if (typeof option === "string")
+                    return option === value;
                 if (Array.isArray(value)) {
-                    console.log(Boolean(getEntityById(option._id, value)));
                     return Boolean(getEntityById(option._id, value));
                 }
                 return option._id === value._id;

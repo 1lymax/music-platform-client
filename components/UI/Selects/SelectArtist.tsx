@@ -1,8 +1,7 @@
 // @flow
 import * as React from "react";
-import {Link, Typography} from "@mui/material";
-import {FC, useState} from "react";
 import styled from "styled-components";
+import {useEffect, useState} from "react";
 
 import AppDialog from "../AppDialog";
 import AddArtistTemplate from "../../AddArtistTemplate";
@@ -10,6 +9,8 @@ import SelectTemplate from "./SelectTemplate";
 import {IArtist} from "../../../types/artist";
 import AddButtonIcon from "../Buttons/AddButtonIcon";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
+import {useUserActions} from "../../../hooks/dispatch";
+import {SelectShowAddNewInfo} from "./SelectShowAddNewInfo";
 
 const Container = styled.div`
   width: 100%;
@@ -24,41 +25,42 @@ const ButtonCell = styled.div`
   align-items: center;
 `;
 
-const WarningCell = styled.div`
-  margin: 0 10px;
-`;
-
-interface ISelectArtist {
+interface Props {
     setArtist: (artist: IArtist) => void;
     defaultValue: IArtist | undefined;
     showAddNewInfo?: boolean,
     artistName?: string
 }
 
-export const SelectArtist: FC<ISelectArtist> = (props) => {
+export const SelectArtist = (props: Props) => {
     const { setArtist, defaultValue, showAddNewInfo = false, artistName = "" } = props;
-    const [artistDialog, setArtistDialog] = useState<boolean>(false);
+
+    const { setDialogAddNewArtist } = useUserActions();
+    const { dialogs } = useTypedSelector(state => state.user);
     const { artists } = useTypedSelector(state => state.artist);
+    const [valueToShowInAddInfo, setValueToShowInAddInfo] = useState<string>('');
+
+    useEffect(() => {
+        if (defaultValue)
+            setValueToShowInAddInfo(artistName !== defaultValue.name ? artistName : '');
+        else
+            setValueToShowInAddInfo(artistName)
+    }, [artistName, defaultValue]);
 
     return (
         <Container>
             <SelectTemplate label={"Artist..."} onChange={setArtist} options={artists} defaultValue={defaultValue}/>
             <ButtonCell>
-                <AddButtonIcon onClick={() => setArtistDialog(true)}/>
+                <AddButtonIcon onClick={() => setDialogAddNewArtist(true)}/>
             </ButtonCell>
-            {!defaultValue && showAddNewInfo &&
-				<WarningCell>
-					<Typography variant={"body2"}>
-						<div>Add <Link component={"button"}
-										   onClick={() => setArtistDialog(true)}
-										   sx={{ textDecorationStyle: "dashed" }}
-						>{artistName}</Link>
-						</div>
-					</Typography>
-				</WarningCell>
+            {showAddNewInfo &&
+				<SelectShowAddNewInfo valuesToShow={valueToShowInAddInfo}
+									  callBackSetDialog={setDialogAddNewArtist}
+				/>
             }
-            <AppDialog open={artistDialog} setOpen={setArtistDialog} title={"Add new artist"}>
-                <AddArtistTemplate setOpen={setArtistDialog} defaultValue={artistName} onUpdate={setArtist}/>
+            <AppDialog open={dialogs.addNewArtist} setOpen={setDialogAddNewArtist} title={"Add new artist"}>
+                <AddArtistTemplate setOpen={() => setDialogAddNewArtist(true)} defaultValue={artistName}
+                                   onUpdate={setArtist}/>
             </AppDialog>
         </Container>
     );

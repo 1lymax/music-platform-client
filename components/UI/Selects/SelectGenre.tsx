@@ -1,16 +1,17 @@
 // @flow
 import * as React from "react";
-import {FC, useState} from "react";
+import {useEffect, useState} from "react";
 import styled from "styled-components";
-import {Link, Typography} from "@mui/material";
 
 import AppDialog from "../AppDialog";
+import {IGenre} from "../../../types/genre";
 import SelectTemplate from "./SelectTemplate";
 import AddButtonIcon from "../Buttons/AddButtonIcon";
-import {IGenre} from "../../../types/genre";
-import {useGetAllGenresQuery} from "../../../store/api/genre.api";
-import {useTypedSelector} from "../../../hooks/useTypedSelector";
 import AddGenreTemplate from "../../AddGenreTemplate";
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
+import {useGetAllGenresQuery} from "../../../store/api/genre.api";
+import {SelectShowAddNewInfo} from "./SelectShowAddNewInfo";
+import {useUserActions} from "../../../hooks/dispatch";
 
 const Container = styled.div`
   width: 100%;
@@ -24,55 +25,59 @@ const ButtonCell = styled.div`
   align-items: center;
 `;
 
-const WarningCell = styled.div`
-  margin: 0 5px;
-`;
-
-interface ISelectGenre {
+interface Props {
     genreNames?: string[],
     showAddNewInfo?: boolean,
     setGenres: (value: IGenre[]) => void;
-    defaultValue: (IGenre | null)[] | null;
+    defaultValue: IGenre[] | null;
 }
 
-export const SelectGenre: FC<ISelectGenre> = (props) => {
+export const SelectGenre = (props: Props) => {
     const { setGenres, showAddNewInfo = false, genreNames = [], defaultValue } = props;
-    const { genres } = useTypedSelector(state => state.genre);
-    const { refetch } = useGetAllGenresQuery();
-    const [genreDialog, setGenreDialog] = useState<boolean>(false);
 
-    const handleAddNew = () => {
+    const { setDialogAddNewGenre } = useUserActions();
+    const { genres } = useTypedSelector(state => state.genre);
+    const { dialogs } = useTypedSelector(state => state.user);
+    const [valuesToShowInAddInfo, setValuesToShowInAddInfo] = useState<typeof defaultValue>(defaultValue);
+
+    const { refetch } = useGetAllGenresQuery();
+
+    const handleAddNew = (genre: IGenre) => {
         refetch();
+        setGenres(genres);
     };
+
+    const handleChangeValue = (value: any) => {
+        setGenres(value);
+        setValuesToShowInAddInfo(value);
+    };
+
+    useEffect(() => {
+        if (defaultValue)
+            setValuesToShowInAddInfo(genreNames.filter(entity => {
+                return defaultValue.indexOf(entity) === -1;
+            }));
+    }, [genreNames, defaultValue]);
 
     return (
         <Container>
             <SelectTemplate label="Genre"
                             multiple
                             defaultValue={defaultValue}
-                            onChange={setGenres}
+                            onChange={handleChangeValue}
                             options={genres}/>
             <ButtonCell>
                 <AddButtonIcon //icon={<Add/>}
-                    onClick={() => setGenreDialog(true)}></AddButtonIcon>
+                    onClick={() => setDialogAddNewGenre(true)}></AddButtonIcon>
             </ButtonCell>
-            {!defaultValue?.length && showAddNewInfo &&
-				<WarningCell>
-					<Typography variant={"body2"} sx={{ textDecorationStyle: "dashed" }}>
-						<span>Add <Link component={"button"}
-								   variant={"body2"}
-								   onClick={() => setGenreDialog(true)}
-								   sx={{ textDecorationStyle: "dashed" }}
-						>{genreNames.join(', ')}
-
-						</Link> genres</span>
-
-					</Typography>
-				</WarningCell>
+            {showAddNewInfo &&
+				<SelectShowAddNewInfo valuesToShow={valuesToShowInAddInfo && valuesToShowInAddInfo?.join(',')}
+									  callBackSetDialog={setDialogAddNewGenre}
+				/>
             }
-            <AppDialog open={genreDialog} setOpen={setGenreDialog} title={"Add Genres"}>
-                <AddGenreTemplate setOpen={setGenreDialog} defaultValue={genreNames}
-                          onUpdate={handleAddNew}/>
+            <AppDialog open={dialogs.addNewGenre} setOpen={setDialogAddNewGenre} title={"Add Genres"}>
+                <AddGenreTemplate setOpen={() => setDialogAddNewGenre(true)} defaultValue={genreNames}
+                                  onUpdate={handleAddNew}/>
             </AppDialog>
         </Container>
     );

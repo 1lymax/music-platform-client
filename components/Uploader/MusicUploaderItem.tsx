@@ -1,6 +1,5 @@
 // @flow
 import * as React from "react";
-import {FC} from "react";
 import styled from "styled-components";
 import {TextField} from "@mui/material";
 import {Delete} from "@mui/icons-material";
@@ -13,8 +12,7 @@ import {SelectArtist} from "../UI/Selects/SelectArtist";
 import {getEntityById} from "../../helpers/getEntityById";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {getEntityByName} from "../../helpers/getEntityByName";
-import {getEntitiesByArrayId} from "../../helpers/getEntitiesByArrayId";
-import {getEntitiesByArrayNames} from "../../helpers/getEntitiesByArrayNames";
+import {getEntitiesByArrayEntities} from "../../helpers/getEntitiesByArrayEntities";
 
 const Container = styled.div`
   display: grid;
@@ -45,13 +43,13 @@ const TwiceCell = styled.div`
 `;
 
 
-interface IUploaderItem {
+interface Props {
     file: IUploaderFile,
     onUpdate: (file: IUploaderFile) => void
     onRemove: (file: IUploaderFile) => void
 }
 
-export const MusicUploaderItem: FC<IUploaderItem> = ({ file, onUpdate, onRemove }) => {
+export const MusicUploaderItem = ({ file, onUpdate, onRemove }: Props) => {
     const { artists } = useTypedSelector(state => state.artist);
     const { albums } = useTypedSelector(state => state.album);
     const { genres } = useTypedSelector(state => state.genre);
@@ -125,9 +123,11 @@ export const MusicUploaderItem: FC<IUploaderItem> = ({ file, onUpdate, onRemove 
             <Cell>
                 <SelectGenre showAddNewInfo
                              genreNames={file.genreFromTag}
-                             defaultValue={getEntitiesByArrayNames(file.genreFromTag, genres)}
+                             defaultValue={getEntitiesByArrayEntities(file.genre, genres)}
                              setGenres={(genre) => {
-                                 onUpdate({ ...file, genre: getEntitiesByArrayId(genre, genres) });
+                                 onUpdate({ ...file,
+                                     genre: getEntitiesByArrayEntities(genre  , genres)
+                                 });
                              }}/>
             </Cell>
 
