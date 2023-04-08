@@ -3,7 +3,8 @@ import {IAlbum} from "./album";
 import {IGenre} from "./genre";
 
 export interface IUploaderState {
-    files: IUploaderFile[]
+    filesData: IUploaderFile[],
+    status: string
 }
 
 
@@ -16,10 +17,24 @@ export interface IUploaderFile {
     album: IAlbum | undefined,
     artist: IArtist | undefined,
     label: string[] | undefined,
-    genre: IGenre[] | null,
+    genre: IGenre[] | undefined,
     genreFromTag: string[] | undefined,
     duration: number | undefined,
     artistNameFromTag: string | undefined,
     albumNameFromTag: string | undefined,
 }
 
+export interface IUploaderFile2 {
+    name: string,
+    nameFromTag: string | undefined,
+    year: number | undefined,
+    posInAlbum: number | null
+    album: IAlbum | undefined,
+    artist: IArtist | undefined,
+    label: string[] | undefined,
+    genre: IGenre[] | undefined,
+    genreFromTag: string[] | undefined,
+    duration: number | undefined,
+    artistNameFromTag: string | undefined,
+    albumNameFromTag: string | undefined,
+}

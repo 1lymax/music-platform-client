@@ -3,17 +3,17 @@ import {configureStore, createAction} from "@reduxjs/toolkit";
 import {authApi} from "./api/auth.api";
 import {trackApi} from "./api/track.api";
 import {albumApi} from "./api/album.api";
+import {genreApi} from "./api/genre.api";
 import {artistApi} from "./api/artist.api";
 import {userSlice} from "./slices/userSlice";
 import {trackSlice} from "./slices/trackSlice";
 import {playlistApi} from "./api/playlist.api";
 import {albumSlice} from "./slices/albumSlice";
+import {genreSlice} from "./slices/genreSlice";
 import {playerSlice} from "./slices/playerSlice";
 import {artistSlice} from "./slices/artistSlice";
 import {playlistSlice} from "./slices/playlistSlice";
 import {uploaderSlice} from "./slices/uploaderSlice";
-import {genreSlice} from "./slices/genreSlice";
-import {genreApi} from "./api/genre.api";
 
 export const makeStore = () =>
     configureStore({

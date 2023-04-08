@@ -24,6 +24,12 @@ const Container = styled.div`
   width: 100%;
 `;
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`
+
 const ActionContainer = styled.div`
   width: 50%;
   display: flex;
@@ -75,23 +81,25 @@ const Create = () => {
                     }
                 );
             });
-    };
+    }
 
-    const handleItemChange = (updated: IUploaderFile[][number]) => {
+    const handleItemChange =(toUpdate: IUploaderFile[][number]) => {
         let updatedList = fileList.map(item => {
-            if (item.audio == updated.audio) {
-                return updated;
+            if (item.audio == toUpdate.audio) {
+                return toUpdate;
             }
             return item;
         });
+
         setFileList(updatedList);
-    };
+    }
 
-    const handleItemRemove = (file: IUploaderFile) => {
+    const handleItemRemove =(file: IUploaderFile) => {
         setFileList(prevState => prevState.filter(item => item.name !== file.name));
-    };
+    }
 
-    const handleUploadToServer = async () => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         const form = new FormData();
         fileList.map((file, index) => {
             for (let [key, val] of Object.entries(file)) {
@@ -132,12 +140,13 @@ const Create = () => {
 
 
     useEffect(() => {
-        //console.log(fileList);
+       // console.log('fileList', fileList);
     }, [fileList]);
 
     return (
         <MainLayout>
             {Boolean(fileList?.length) &&
+
 				<UploaderContainer width="70px"
 								   height="70px"
 								   zoomButton
@@ -145,24 +154,26 @@ const Create = () => {
 								   setFiles={handleAllPicturesSetter}
 				/>
             }
-            <Container>
-                {fileList && fileList.map((file) => (
-                    <MusicUploaderItem file={file}
-                                       key={file.audio.name + file.duration}
-                                       onUpdate={handleItemChange}
-                                       onRemove={handleItemRemove}/>
-                ))}
-            </Container>
-            <ActionContainer>
-                <DragContainer setFiles={handleDragnDropFiles}
-                               accept={"audio"}
-                >Drag&Drop files here or browse...</DragContainer>
-                <Button variant={"contained"}
-                        onClick={handleUploadToServer}
-                        disabled={!Boolean(fileList?.length)}>
-                    Upload
-                </Button>
-            </ActionContainer>
+            <Form onSubmit={onSubmit}>
+                <Container>
+                    {fileList && fileList.map((file) => (
+                        <MusicUploaderItem file={file}
+                                           key={file.audio.name + file.duration}
+                                           onUpdate={handleItemChange}
+                                           onRemove={handleItemRemove}/>
+                    ))}
+                </Container>
+                <ActionContainer>
+                    <DragContainer setFiles={handleDragnDropFiles}
+                                   accept={"audio"}
+                    >Drag&Drop files here or browse...</DragContainer>
+                    <Button variant={"contained"}
+                            type={"submit"}
+                            disabled={!Boolean(fileList?.length)}>
+                        Upload
+                    </Button>
+                </ActionContainer>
+            </Form>
         </MainLayout>
     );
 };

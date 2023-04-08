@@ -126,7 +126,7 @@ export const MusicUploaderItem = ({ file, onUpdate, onRemove }: Props) => {
                              defaultValue={getEntitiesByArrayEntities(file.genre, genres)}
                              setGenres={(genre) => {
                                  onUpdate({ ...file,
-                                     genre: getEntitiesByArrayEntities(genre  , genres)
+                                     genre: getEntitiesByArrayEntities(genre, genres)
                                  });
                              }}/>
             </Cell>
@@ -134,4 +134,4 @@ export const MusicUploaderItem = ({ file, onUpdate, onRemove }: Props) => {
 
         </Container>
     );
-};
+}

@@ -1,5 +1,5 @@
-import React, {FC, ReactNode, useRef, useState} from "react";
 import styled from "styled-components";
+import React, {ReactNode, useRef, useState} from "react";
 
 interface StyledContainerProps {
     // true when starting to drag a product card
@@ -26,7 +26,7 @@ const Container = styled.div<StyledContainerProps>`
   display: ${props => props.isVisible ? "flex" : "none"};
 `;
 
-interface FileUploaderProps {
+interface Props {
     setFiles: (files: FileList | null) => void;
     accept: "audio" | "image";
     isVisible?: boolean;
@@ -34,7 +34,7 @@ interface FileUploaderProps {
     styles?: StyledContainerProps["styles"];
 }
 
-const DragContainer: FC<FileUploaderProps> = (props) => {
+const DragContainer =(props: Props) => {
     const { accept, setFiles, isVisible = true, styles } = props;
     const ref = useRef<HTMLInputElement>(null);
     const [isDragActive, setIsDragActive] = useState(false);
@@ -59,7 +59,7 @@ const DragContainer: FC<FileUploaderProps> = (props) => {
         e.stopPropagation();
         setFiles(e.dataTransfer.files);
         setIsDragActive(false);
-    };
+    }
 
     return (
         <Container onDrop={handleDrop}
@@ -78,6 +78,6 @@ const DragContainer: FC<FileUploaderProps> = (props) => {
             {props.children}
         </Container>
     );
-};
+}
 
 export default DragContainer;

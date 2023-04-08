@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
 import TextField from "@mui/material/TextField";
+import React, {useEffect, useState} from "react";
 import Autocomplete from "@mui/material/Autocomplete";
-import {getEntityById} from "../../../helpers/getEntityById";
 import {isEmptyArray} from "../../../helpers/isEmptyArray";
+import {getEntityById} from "../../../helpers/getEntityById";
 
 interface Props {
     options: any[];
@@ -17,14 +17,12 @@ const SelectTemplate = (props: Props) => {
     const { options, onChange, label, defaultValue = null, multiple } = props;
     const [value, setValue] = useState<any>(multiple ? [] : null);
 
-
     useEffect(() => {
         if (defaultValue && !isEmptyArray(defaultValue)) {
             setValue(defaultValue);
         }
     }, [defaultValue]);
 
-    //console.log('options', options);
     return (
         <Autocomplete
             fullWidth
@@ -49,7 +47,7 @@ const SelectTemplate = (props: Props) => {
             renderInput={(params) => <TextField {...params} label={label}/>}
         />
     );
-};
+}
 
 
 export default SelectTemplate;

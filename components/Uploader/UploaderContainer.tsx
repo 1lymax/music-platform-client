@@ -1,15 +1,15 @@
 // @flow
-import {FC, useEffect, useState} from "react";
 import * as React from "react";
 import styled from "styled-components";
-import DragContainer from "./DragContainer";
+import {useEffect, useState} from "react";
 import {AddAPhoto, NoPhotography} from "@mui/icons-material";
-import {ImageThumbnail} from "../UI/Image/ImageThumbnail";
+import DragContainer from "./DragContainer";
 import IconButton from "@mui/material/IconButton";
+import {ImageThumbnail} from "../UI/Image/ImageThumbnail";
 
 const Container = styled.div``;
 
-interface IUploaderContainer {
+interface Props {
     width?: string;
     height?: string;
     zoomButton: boolean;
@@ -27,7 +27,7 @@ const ImageBox = styled.div`
 
 `;
 
-export const UploaderContainer: FC<IUploaderContainer> = (props) => {
+export const UploaderContainer = (props: Props) => {
     const {
         fileForPreview,
         setFiles,
@@ -48,7 +48,7 @@ export const UploaderContainer: FC<IUploaderContainer> = (props) => {
                 setFiles(files);
             }
         };
-    };
+    }
 
     useEffect(() => {
         if (fileForPreview) {
@@ -78,4 +78,4 @@ export const UploaderContainer: FC<IUploaderContainer> = (props) => {
             }
         </Container>
     );
-};
+}

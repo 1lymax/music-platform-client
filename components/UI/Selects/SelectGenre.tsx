@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
-import {useEffect, useState} from "react";
 import styled from "styled-components";
+import {useEffect, useState} from "react";
 
 import AppDialog from "../AppDialog";
 import {IGenre} from "../../../types/genre";
@@ -29,7 +29,7 @@ interface Props {
     genreNames?: string[],
     showAddNewInfo?: boolean,
     setGenres: (value: IGenre[]) => void;
-    defaultValue: IGenre[] | null;
+    defaultValue: IGenre[] | undefined;
 }
 
 export const SelectGenre = (props: Props) => {
@@ -42,7 +42,7 @@ export const SelectGenre = (props: Props) => {
 
     const { refetch } = useGetAllGenresQuery();
 
-    const handleAddNew = (genre: IGenre) => {
+    const handleAddNew = () => {
         refetch();
         setGenres(genres);
     };
@@ -50,22 +50,24 @@ export const SelectGenre = (props: Props) => {
     const handleChangeValue = (value: any) => {
         setGenres(value);
         setValuesToShowInAddInfo(value);
-    };
+    }
 
     useEffect(() => {
         if (defaultValue)
             setValuesToShowInAddInfo(genreNames.filter(entity => {
                 return defaultValue.indexOf(entity) === -1;
             }));
-    }, [genreNames, defaultValue]);
+    }, [genreNames.length, defaultValue?.length]);
+
 
     return (
         <Container>
-            <SelectTemplate label="Genre"
-                            multiple
+            <SelectTemplate multiple
+                            label="Genre"
+                            options={genres}
                             defaultValue={defaultValue}
                             onChange={handleChangeValue}
-                            options={genres}/>
+            />
             <ButtonCell>
                 <AddButtonIcon //icon={<Add/>}
                     onClick={() => setDialogAddNewGenre(true)}></AddButtonIcon>
